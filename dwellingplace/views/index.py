@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, send_file
+from flask import Blueprint, request, render_template, send_file
 
-from ..models import Metric, save_json
+from ..models import Metric, save_xlsx, save_json
 
 
 blueprint = Blueprint('index', __name__)
@@ -9,7 +9,7 @@ blueprint = Blueprint('index', __name__)
 @blueprint.route("/")
 def get():
     formats = [
-        # ('xlsx', "Excel"),
+        ('xlsx', "Excel"),
         # ('csv', "CSV"),
         ('json', "JSON"),
     ]
@@ -18,7 +18,12 @@ def get():
 
 @blueprint.route("/download", methods=['POST'])
 def download():
-    data = Metric.objects()
-    path = save_json(data, "/tmp/metrics.json")
+    ext = request.form['format']
+
+    data = list(Metric.objects())
+    if ext == 'xlsx':
+        path = save_xlsx(data, "/tmp/metrics.xlsx")
+    elif ext == 'json':
+        path = save_json(data, "/tmp/metrics.json")
 
     return send_file(path, as_attachment=True)
