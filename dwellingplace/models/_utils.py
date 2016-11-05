@@ -73,8 +73,13 @@ def parse_xlsx_into_dicts(xl):
                 if col_name:  # ignore blanks
                     metric_dict[col_name] = sheet.cell(row, col).value
             # special conversions
-            year, month, day, hour, minute, second = xlrd.xldate_as_tuple(metric_dict['Date'], xl.datemode)
-            metric_dict['Date'] = datetime(year, month, day, hour, minute, second)
+            try:
+                year, month, day, hour, minute, second = xlrd.xldate_as_tuple(metric_dict['Date'], xl.datemode)
+                metric_dict['Date'] = datetime(year, month, day, hour, minute, second)
+            except TypeError as err:
+                errmsg = "Invalid date in row {}. Go back, fix the cell in your spreadsheet, and upload it again.".format(row)
+                err.message = errmsg
+                raise err
             # done with this row
             yield metric_dict
 
