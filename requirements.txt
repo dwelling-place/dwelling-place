@@ -11,3 +11,9 @@ openpyxl == 2.4.0
 # Deployment
 Flask-Script == 2.0.5
 gunicorn == 19.3.0
+
+# Forms
+WTForms == 2.1
+
+# Authentication
+Flask-Login == 0.4.0
