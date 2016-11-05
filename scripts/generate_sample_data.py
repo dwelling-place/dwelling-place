@@ -10,7 +10,7 @@ from dwellingplace import models
 def main():
     create_app(get_config(os.getenv('FLASK_ENV') or 'dev'))
 
-    room = models.Foobar()
+    metric = models.Meric()
 
 
 if __name__ == '__main__':
