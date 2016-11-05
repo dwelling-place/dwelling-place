@@ -10,7 +10,5 @@ class User(UserMixin):
         self.password = password
 
     @classmethod
-    def get(cls,id):
+    def get(cls, id):  # pylint: disable=redefined-builtin
         return cls.user_database.get(id)
-
-
