@@ -21,10 +21,17 @@ def save_xlsx(data, path):
     workbook = openpyxl.Workbook()
     worksheet = workbook.active
 
+    # Add header row
     header = _get_header(data)
     log.debug("Header: %s", header)
     worksheet.append(header)
 
+    # Enable filtering on every column
+    worksheet.auto_filter.ref = "A1:ZZ9999"
+    for index in range(len(header)):
+        worksheet.auto_filter.add_filter_column(index, [])
+
+    # Add data rows
     for datum in data:
         row = [datum.get(key, '') for key in header]
         log.debug("Row: %s", row)
