@@ -35,5 +35,8 @@ def download():
 def upload():
     file = request.files['file']
     xl = xlrd.open_workbook(file_contents=file.stream.read())
-    merge_metrics_from_dicts(parse_xlsx_into_dicts(xl))
+    try:
+        merge_metrics_from_dicts(parse_xlsx_into_dicts(xl))
+    except TypeError as err:
+        return err.message
     return 'Upload success.'

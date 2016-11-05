@@ -30,20 +30,24 @@ def parse_xlsx_into_dicts(xl):
                 if col_name:  # ignore blanks
                     metric_dict[col_name] = sheet.cell(row, col).value
             # special conversions
-            parts = xlrd.xldate_as_tuple(metric_dict['Date'], xl.datemode)
-            metric_dict['Date'] = datetime(*parts)
+            try:
+                parts = xlrd.xldate_as_tuple(metric_dict['Date'], xl.datemode)
+                metric_dict['Date'] = datetime(*parts)
+            except TypeError as err:
+                errmsg = "Invalid date in row {}. Go back, fix the cell in your spreadsheet, and upload it again.".format(row)
+                err.message = errmsg
+                raise err
             # done with this row
             yield metric_dict
 
 
 def merge_metrics_from_dicts(metric_dicts):
-    for metric_dict in metric_dicts:
-        m = Metric.find(
-            PropertyID=metric_dict['PropertyID'],
-            Date=metric_dict['Date'],
-        )
-        m.update(**metric_dict)
-        m.save()
+    for new_data in metric_dicts:
+        metric = Metric.find(PropertyID=new_data['PropertyID'], Date=new_data['Date'])
+        for k, v in new_data.items():
+            if v not in (None, ''):
+                metric[k] = v
+        metric.save()
 
 
 def save_json(data, path):
@@ -69,7 +73,7 @@ def save_xlsx(data, path):
         worksheet.write_row(index, 0, row)
 
     # Convert the data to a table (for Microsoft BI)
-    worksheet.add_table("A1:ZZ9999")
+    worksheet.add_table("A1:ZZ9999")  # pylint: disable=no-value-for-parameter
     worksheet.write_row(0, 0, header)
 
     workbook.close()
@@ -85,21 +89,3 @@ def _get_header(data):
         header.update(datum.keys())
 
     return list(header)
-
-
-def _tabulate(data):
-    """Convert a list of dictionaries into nested lists."""
-    header = _get_header(data)
-
-    yield header
-    for datum in data:
-        yield [datum.get(key, None) for key in header]
-
-
-def _tabulate(data):
-    """Convert a list of dictionaries into nested lists."""
-    header = _get_header(data)
-    for datum in data:
-        row = [datum.get(key, None) for key in header]
-        log.debug("Row: %s", row)
-        yield row

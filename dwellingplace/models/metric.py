@@ -1,15 +1,27 @@
 from collections import OrderedDict
+from datetime import datetime
+
+import pymongo
 
 from ..extensions import mongo
 
 
 class Metric(OrderedDict):
 
-    def __init__(self, PropertyID=None, Date=None, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__()
-        self['PropertyID'] = PropertyID
-        self['Date'] = Date.replace(tzinfo=None) if Date else None
+        property_id = kwargs.pop('PropertyID', None)
+        date = kwargs.pop('Date', None)
+        if isinstance(date, datetime):
+            date = date.replace(tzinfo=None)
+        self['PropertyID'] = property_id
+        self['Date'] = date
         self.update(kwargs)
+
+    @classmethod
+    def create_indexes(cls):
+        cls._documents().create_index([('Date', pymongo.ASCENDING),
+                                       ('PropertyID', pymongo.ASCENDING)])
 
     @property
     def key(self):
