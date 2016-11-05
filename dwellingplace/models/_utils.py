@@ -80,7 +80,9 @@ def parse_xlsx_into_dicts(xl):
 
 
 def merge_metrics_from_dicts(metric_dicts):
-    for metric_dict in metric_dicts:
-        m = Metric.find(PropertyID=metric_dict['PropertyID'], Date=metric_dict['Date'])
-        m.update(**metric_dict)
-        m.save()
+    for new_data in metric_dicts:
+        metric = Metric.find(PropertyID=new_data['PropertyID'], Date=new_data['Date'])
+        for k, v in new_data.items():
+            if v not in (None, ''):
+                metric[k] = v
+        metric.save()
