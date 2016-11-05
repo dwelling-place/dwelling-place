@@ -1,0 +1,58 @@
+
+      function fileSelected() {
+        var file = document.getElementById('fileToUpload').files[0];
+        if (file) {
+          var fileSize = 0;
+          if (file.size > 1024 * 1024)
+            fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
+          else
+            fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB';
+
+          document.getElementById('fileName').innerHTML = 'Name: ' + file.name;
+          document.getElementById('fileSize').innerHTML = 'Size: ' + file.size;
+          document.getElementById('fileType').innerHTML = 'Type: ' + file.type;
+        }
+      }
+
+      function uploadFile() {
+        var fd = new FormData();
+          var file = document.getElementById('fileToUpload').files[0];
+          alert("file type: "+ file.type);
+        fd.append("fileToUpload", file);
+        var xhr = new XMLHttpRequest();
+        //xhr.upload.addEventListener("progress", uploadProgress, false);
+        xhr.addEventListener("loadstart", function(event) {if (event.lengthComputable) progressbar.max = event.total}, false);
+        xhr.addEventListener("progress", function(event) {if (event.lengthComputable) progressbar.value = event.loaded}, false);
+        xhr.addEventListener("load", uploadComplete, false);
+        xhr.addEventListener("error", uploadFailed, false);
+        xhr.addEventListener("abort", uploadCanceled, false);
+        xhr.open("POST", "/upload");
+        xhr.setRequestHeader("Content-Type", "multipart/form-data");
+          xhr.setRequestHeader("X-File-Name", file.name);
+          xhr.setRequestHeader("X-File-Size", file.size);
+          xhr.setRequestHeader("X-File-Type", file.type);
+        xhr.send(fd);
+      }
+
+      function uploadProgress(evt) {
+        if (evt.lengthComputable) {
+          var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+          document.getElementById('progressNumber').innerHTML = percentComplete.toString() + '%';
+        }
+        else {
+          document.getElementById('progressNumber').innerHTML = 'unable to compute';
+        }
+      }
+
+      function uploadComplete(evt) {
+        /* This event is raised when the server send back a response */
+        alert(evt.target.responseText);
+      }
+
+      function uploadFailed(evt) {
+        alert("There was an error attempting to upload the file.");
+      }
+
+      function uploadCanceled(evt) {
+        alert("The upload has been canceled by the user or the browser dropped the connection.");
+      }
