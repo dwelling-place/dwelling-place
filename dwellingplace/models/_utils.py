@@ -7,9 +7,11 @@ from datetime import datetime
 import openpyxl
 import xlrd
 
+from .metric import Metric
+
+
 log = logging.getLogger(__name__)
 
-from .metric import Metric
 
 def save_json(data, path):
     with open(path, 'w') as outfile:
@@ -53,11 +55,12 @@ def _get_header(data):
 
     return list(header)
 
+
 def parse_xlsx_into_dicts(xl):
-    '''
+    """
     :param xl: an xlrd object
     :return:
-    '''
+    """
     for sheet_name in xl.sheet_names():
         sheet = xl.sheet_by_name(sheet_name)
         column_names = sheet.row_values(0)
@@ -74,6 +77,7 @@ def parse_xlsx_into_dicts(xl):
             metric_dict['Date'] = datetime(year, month, day, hour, minute, second)
             # done with this row
             yield metric_dict
+
 
 def merge_metrics_from_dicts(metric_dicts):
     for metric_dict in metric_dicts:

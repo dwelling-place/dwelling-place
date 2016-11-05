@@ -1,5 +1,5 @@
 import xlrd
-from flask import Blueprint, request, render_template, send_file, request
+from flask import Blueprint, request, render_template, send_file
 
 from ..models import Metric, save_xlsx, save_json
 from ..models._utils import parse_xlsx_into_dicts, merge_metrics_from_dicts
@@ -29,6 +29,7 @@ def download():
         path = save_json(data, "/tmp/metrics.json")
 
     return send_file(path, as_attachment=True)
+
 
 @blueprint.route("/upload", methods=['POST'])
 def upload():

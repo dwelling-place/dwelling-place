@@ -3,7 +3,7 @@ from datetime import datetime
 
 import xlrd
 
-from dwellingplace.models._utils import parse_xlsx_into_dicts, merge_metrics_from_dicts
+from dwellingplace.models._utils import parse_xlsx_into_dicts
 
 
 def test_load():
