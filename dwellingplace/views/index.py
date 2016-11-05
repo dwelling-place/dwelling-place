@@ -1,6 +1,7 @@
 import xlrd
 
 from flask import Blueprint, request, render_template, send_file, Response
+from flask import flash, redirect, url_for
 from flask_login import login_required
 
 from ..models import Metric, Structure, save_xlsx, save_json
@@ -41,8 +42,10 @@ def upload():
         update_structure(xl, Structure.load())
         merge_metrics_from_dicts(parse_xlsx_into_dicts(xl))
     except TypeError as err:
-        return err.message
-    return 'Upload success.'
+        flash('Upload Failed: ' + err.message,  "message-upload-fail")
+    else:
+        flash('Upload successful.', "message-upload-success")
+    return redirect(url_for('index.get'))
 
 
 @blueprint.route("/protected/", methods=["GET"])
