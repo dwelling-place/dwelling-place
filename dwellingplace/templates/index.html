@@ -13,36 +13,24 @@
         {% endif %}
     {% endwith %}
 
-<h2>Upload</h2>
-<section>
-	<form id="upload" enctype="multipart/form-data" method="post" action="Upload.aspx">
-		<h3>Select a file to upload</h3>
-  		<input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();"/>
-  		<input type="button" onclick="uploadFile()" value="Upload" />
-	</form>
-	<h3>File Information</h3>
-	<div id="fileName"></div>
-	<div id="fileSize"></div>
-	<div id="fileType"></div>
-	<h3>Progress</h3>
-	<progress id="progressbar" value=0></progress>
-</section>
+    <h2>Upload</h2>
+    <section>
+        <form action="{{ url_for('index.upload') }}" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file">
+            <button type="submit">Upload</button>
+        </form>
+    </section>
 
-<h2>Download</h2>
-<section>
-	<form name="download" action="{{ url_for('index.download') }}" method="POST">
-    	<select name="format">
-        	{% for ext, name in formats %}
-        	<option value="{{ ext }}">{{ name }}</option>
-        	{% endfor %}
-    	</select>
-    	<button type="submit">Download</button>
-	</form>
-</section>
-
-<form action="{{ url_for('index.upload') }}" method="POST" enctype="multipart/form-data">
-    <input type="file" name="file">
-    <button type="submit">Upload</button>
-</form>
+    <h2>Download</h2>
+    <section>
+        <form name="download" action="{{ url_for('index.download') }}" method="POST">
+            <select name="format">
+                {% for ext, name in formats %}
+                <option value="{{ ext }}">{{ name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Download</button>
+        </form>
+    </section>
 
 {% endblock%}
