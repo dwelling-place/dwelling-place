@@ -20,6 +20,23 @@ class Metric(OrderedDict):
         return mongo.db.metric
 
     @classmethod
+    def find(cls, **kwargs):
+        documents = cls._documents()
+        document = documents.find_one(kwargs)
+        if document:
+            document.pop('_id')
+            return cls(
+                PropertyID=document.pop('PropertyID', None),
+                Date=document.pop('Date', None),
+                **document,
+            )
+        else:
+            return cls(
+                PropertyID=kwargs.get('PropertyID'),
+                Date=kwargs.get('Date'),
+            )
+
+    @classmethod
     def objects(cls):
         documents = cls._documents()
         for document in documents.find():

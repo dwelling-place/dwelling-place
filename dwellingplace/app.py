@@ -31,6 +31,7 @@ def configure_logging(app):
 
 def register_blueprints(app):
     app.register_blueprint(views.index.blueprint)
+    app.register_blueprint(views.api.blueprint)
 
 
 def register_extensions(app):
