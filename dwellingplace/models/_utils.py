@@ -2,9 +2,10 @@
 
 import json
 import logging
+from datetime import datetime
 
 import openpyxl
-
+import xlrd
 
 log = logging.getLogger(__name__)
 
@@ -60,15 +61,22 @@ def parse_xlsx_into_dicts(xl):
     for sheet_name in xl.sheet_names():
         sheet = xl.sheet_by_name(sheet_name)
         column_names = sheet.row_values(0)
-        # TODO: handle periods in key names?
+        # mongodb doesn't like '.' in field names
+        column_names = [c.replace('.', '') for c in column_names]
         for row in range(1, sheet.nrows):
             metric_dict = {}
             for col in range(0, sheet.ncols):
-                metric_dict[column_names[col]] = sheet.cell(row, col).value
+                col_name = column_names[col]
+                if col_name:  # ignore blanks
+                    metric_dict[col_name] = sheet.cell(row, col).value
+            # special conversions
+            year, month, day, hour, minute, second = xlrd.xldate_as_tuple(metric_dict['Date'], xl.datemode)
+            metric_dict['Date'] = datetime(year, month, day, hour, minute, second)
+            # done with this row
             yield metric_dict
 
 def merge_metrics_from_dicts(metric_dicts):
     for metric_dict in metric_dicts:
-        m = Metric.find(PropertyID=metric_dict['PropertyID'], Date=metric_dict['Period'])
+        m = Metric.find(PropertyID=metric_dict['PropertyID'], Date=metric_dict['Date'])
         m.update(**metric_dict)
         m.save()
