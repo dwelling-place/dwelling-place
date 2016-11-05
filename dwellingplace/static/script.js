@@ -23,7 +23,7 @@
         xhr.addEventListener("load", uploadComplete, false);
         xhr.addEventListener("error", uploadFailed, false);
         xhr.addEventListener("abort", uploadCanceled, false);
-        xhr.open("POST", "UploadMinimal.aspx");
+        xhr.open("POST", "/upload");
         xhr.send(fd);
       }
 
