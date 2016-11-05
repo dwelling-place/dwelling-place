@@ -7,6 +7,7 @@ Flask-PyMongo == 0.4.1
 
 # Files
 openpyxl == 2.4.0
+xlrd == 1.0.0
 
 # Deployment
 Flask-Script == 2.0.5
