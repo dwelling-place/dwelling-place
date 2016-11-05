@@ -35,7 +35,7 @@ def parse_xlsx_into_dicts(xl):
                 parts = xlrd.xldate_as_tuple(metric_dict['Date'], xl.datemode)
                 metric_dict['Date'] = datetime(*parts)
             except TypeError as err:
-                errmsg = "Invalid date in sheet \"{}\" row {}. Go back, fix the cell in your spreadsheet, and upload it again.".format(sheet_name, row)
+                errmsg = "Invalid date in sheet {!r} row {}. Go back, fix the cell in your spreadsheet, and upload it again.".format(sheet_name, row)
                 err.message = errmsg
                 raise err
             # done with this row
