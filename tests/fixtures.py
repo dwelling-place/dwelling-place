@@ -16,6 +16,9 @@ def app():
 
 @pytest.fixture
 def client(app):
+    with app.app_context():
+        for metric in Metric.objects():
+            metric.delete()
     return app.test_client()
 
 
