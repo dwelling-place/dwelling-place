@@ -11,6 +11,10 @@ class Metric(OrderedDict):
         self['Date'] = Date
         self.update(kwargs)
 
+    @property
+    def key(self):
+        return dict(PropertyID=self['PropertyID'], Date=self['Date'])
+
     @staticmethod
     def _documents():
         return mongo.db.metric
@@ -25,3 +29,7 @@ class Metric(OrderedDict):
                 Date=document.pop('Date', None),
                 **document,
             )
+
+    def save(self):
+        documents = self._documents()
+        documents.replace_one(self.key, self, upsert=True)

@@ -8,9 +8,15 @@ from dwellingplace import models
 
 
 def main():
-    create_app(get_config(os.getenv('FLASK_ENV') or 'dev'))
+    app = create_app(get_config(os.getenv('FLASK_ENV') or 'dev'))
 
-    metric = models.Meric()
+    with app.app_context():
+
+        metric = models.Metric('prop1', '2016/10')
+        metric.save()
+
+        metric = models.Metric('prop2', '2016/10', extra="foobar", thing=1)
+        metric.save()
 
 
 if __name__ == '__main__':
