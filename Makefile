@@ -76,7 +76,7 @@ HONCHO := $(ACTIVATE) && $(BIN_)honcho
 IP ?= $(shell ipconfig getifaddr en0 || ipconfig getifaddr en1)
 
 .PHONY: run
-run: install data
+run: install data ## Run the application
 	status=1; while [ $$status -eq 1 ]; do FLASK_ENV=dev $(PYTHON) manage.py run; status=$$?; sleep 1; done
 
 .PHONY: run-prod
@@ -151,15 +151,15 @@ PYLINT := $(BIN_)pylint
 check: pep8 pep257 pylint ## Run linters and static analysis
 
 .PHONY: pep8
-pep8: install ## Check for convention issues
+pep8: install
 	$(PEP8) $(PACKAGES) $(CONFIG) --config=.pep8rc
 
 .PHONY: pep257
-pep257: install ## Check for docstring issues
+pep257: install
 	$(PEP257) $(PACKAGES) $(CONFIG)
 
 .PHONY: pylint
-pylint: install ## Check for code issues
+pylint: install
 	$(PYLINT) $(PACKAGES) $(CONFIG) --rcfile=.pylintrc
 
 .PHONY: fix
@@ -185,23 +185,23 @@ FAILURES := .cache/v/cache/lastfailed
 REPORTS ?= xmlreport
 
 .PHONY: test
-test: test-all
+test: test-all ## Run all the tests
 
 .PHONY: test-unit
-test-unit: install ## Run the unit tests
+test-unit: install
 	@- mv $(FAILURES) $(FAILURES).bak
 	$(PYTEST) $(PYTEST_OPTS) $(PACKAGE)
 	@- mv $(FAILURES).bak $(FAILURES)
 	$(COVERAGE_SPACE) $(REPOSITORY) unit
 
 .PHONY: test-int
-test-int: install ## Run the integration tests
+test-int: install
 	@ if test -e $(FAILURES); then $(PYTEST) $(PYTEST_OPTS_FAILFAST) tests; fi
 	$(PYTEST) $(PYTEST_OPTS) tests
 	$(COVERAGE_SPACE) $(REPOSITORY) integration
 
 .PHONY: test-all
-test-all: install ## Run all the tests
+test-all: install
 	@ if test -e $(FAILURES); then $(PYTEST) $(PYTEST_OPTS_FAILFAST) $(PACKAGES); fi
 	$(PYTEST) $(PYTEST_OPTS) $(PACKAGES)
 	$(COVERAGE_SPACE) $(REPOSITORY) overall
@@ -220,23 +220,23 @@ PDOC_INDEX := docs/apidocs/$(PACKAGE)/index.html
 MKDOCS_INDEX := site/index.html
 
 .PHONY: doc
-doc: uml ## Run documentation generators
+doc: uml
 
 .PHONY: uml
-uml: install docs/*.png ## Generate UML diagrams for classes and packages
+uml: install docs/*.png
 docs/*.png: $(MODULES)
 	$(PYREVERSE) $(PACKAGE) -p $(PACKAGE) -a 1 -f ALL -o png --ignore tests
 	- mv -f classes_$(PACKAGE).png docs/classes.png
 	- mv -f packages_$(PACKAGE).png docs/packages.png
 
 .PHONY: pdoc
-pdoc: install $(PDOC_INDEX)  ## Generate API documentaiton with pdoc
+pdoc: install $(PDOC_INDEX)
 $(PDOC_INDEX): $(MODULES)
 	$(PDOC) --html --overwrite $(PACKAGE) --html-dir docs/apidocs
 	@ touch $@
 
 .PHONY: mkdocs
-mkdocs: install $(MKDOCS_INDEX) ## Build the documentation site with mkdocs
+mkdocs: install $(MKDOCS_INDEX)
 $(MKDOCS_INDEX): mkdocs.yml docs/*.md
 	ln -sf `realpath README.md --relative-to=docs` docs/index.md
 	ln -sf `realpath CHANGELOG.md --relative-to=docs/about` docs/about/changelog.md
@@ -245,7 +245,7 @@ $(MKDOCS_INDEX): mkdocs.yml docs/*.md
 	$(MKDOCS) build --clean --strict
 
 .PHONY: mkdocs-live
-mkdocs-live: mkdocs ## Launch and continuously rebuild the mkdocs site
+mkdocs-live: mkdocs
 	eval "sleep 3; open http://127.0.0.1:8000" &
 	$(MKDOCS) serve
 
@@ -282,14 +282,14 @@ $(PROJECT).spec:
 TWINE := $(BIN_)twine
 
 .PHONY: register
-register: dist ## Register the project on PyPI
+register: dist
 	@ echo NOTE: your project must be registered manually
 	@ echo https://github.com/pypa/python-packaging-user-guide/issues/263
 	# TODO: switch to twine when the above issue is resolved
 	# $(TWINE) register dist/*.whl
 
 .PHONY: upload
-upload: .git-no-changes register ## Upload the current version to PyPI
+upload: .git-no-changes register
 	$(TWINE) upload dist/*
 	$(OPEN) https://pypi.python.org/pypi/$(PROJECT)
 
