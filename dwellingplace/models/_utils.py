@@ -84,3 +84,10 @@ def merge_metrics_from_dicts(metric_dicts):
         m = Metric.find(PropertyID=metric_dict['PropertyID'], Date=metric_dict['Date'])
         m.update(**metric_dict)
         m.save()
+
+
+def post_to_BI(dataset):
+    pass
+
+def create_json_for_BI():
+    pass

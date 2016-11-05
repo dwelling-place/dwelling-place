@@ -36,4 +36,5 @@ def upload():
     file = request.files['file']
     xl = xlrd.open_workbook(file_contents=file.stream.read())
     merge_metrics_from_dicts(parse_xlsx_into_dicts(xl))
+    # Do stuff here for RESTful BI thingy
     return 'Upload success.'
