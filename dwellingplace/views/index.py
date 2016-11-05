@@ -16,7 +16,7 @@ def get():
     return render_template("index.html", formats=formats)
 
 
-@blueprint.route("/downlaod", methods=['POST'])
+@blueprint.route("/download", methods=['POST'])
 def download():
     data = Metric.objects()
     path = save_json(data, "/tmp/metrics.json")
