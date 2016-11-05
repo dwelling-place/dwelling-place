@@ -3,7 +3,7 @@
 {% block title %} | Home{% endblock %}
 
 {% block body %}
-<form name="download" action="{{ url_for('index.download') }}"method="POST">
+<form name="download" action="{{ url_for('index.download') }}" method="POST">
     <select name="format">
         {% for ext, name in formats %}
         <option value="{{ ext }}">{{ name }}</option>
