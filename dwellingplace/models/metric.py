@@ -10,9 +10,11 @@ class Metric(OrderedDict):
 
     def __init__(self, PropertyID=None, Date=None, **kwargs):
         super().__init__()
-        if isinstance(Date, datetime):
-            Date = Date.replace(tzinfo=None)
+        if not PropertyID:
+            raise ValueError("Invalid ID: {!r}".format(PropertyID))
         self['PropertyID'] = PropertyID
+        if not isinstance(Date, datetime):
+            raise ValueError("Invalid date: {!r}".format(Date))
         self['Date'] = Date
         self.update(kwargs)
 
@@ -60,3 +62,7 @@ class Metric(OrderedDict):
     def save(self):
         documents = self._documents()
         documents.replace_one(self.key, self, upsert=True)
+
+    def delete(self):
+        documents = self._documents()
+        documents.delete_one(self.key)
