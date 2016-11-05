@@ -18,7 +18,7 @@ class ProdConfig(Config):
     ENV = 'prod'
 
     SECRET_KEY = os.getenv('SECRET_KEY')
-    MONGO_URI = os.getenv('MONGO_URI')
+    MONGO_URI = os.getenv('MONGODB_URI')
 
 
 class TestConfig(Config):
