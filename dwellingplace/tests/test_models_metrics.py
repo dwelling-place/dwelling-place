@@ -2,13 +2,13 @@
 
 from expecter import expect
 
-from dwellingplace.models import Foobar
+from dwellingplace.models import Metric
 
 
-def describe_foobar():
+def describe_metrics():
 
     def describe_init():
 
         def it_does_a_thing():
-            foobar = Foobar()
-            expect(foobar) == foobar
+            m = Metric()
+            expect(m) == m
