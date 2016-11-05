@@ -1,5 +1,7 @@
 # pylint: disable=redefined-outer-name,unused-argument
 
+from datetime import datetime
+
 import pytest
 
 from dwellingplace.app import create_app
@@ -19,7 +21,11 @@ def client(app):
 
 @pytest.fixture
 def metric(app):
-    metric = Metric(PropertyID="id1", Date="2016", extra=42)
+    metric = Metric(
+        PropertyID="id1",
+        Date=datetime(2016, 11, 5),
+        extra=42,
+    )
     with app.app_context():
         metric.save()
     return metric

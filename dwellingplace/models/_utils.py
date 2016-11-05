@@ -4,56 +4,13 @@ import json
 import logging
 from datetime import datetime
 
-import openpyxl
 import xlrd
+import xlsxwriter
 
 from .metric import Metric
 
 
 log = logging.getLogger(__name__)
-
-
-def save_json(data, path):
-    with open(path, 'w') as outfile:
-        json.dump(data, outfile, indent=4)
-
-    return path
-
-
-def save_xlsx(data, path):
-    log.debug("Creating %s", path)
-    workbook = openpyxl.Workbook()
-    worksheet = workbook.active
-
-    # Add header row
-    header = _get_header(data)
-    log.debug("Header: %s", header)
-    worksheet.append(header)
-
-    # Enable filtering on every column
-    worksheet.auto_filter.ref = "A1:ZZ9999"
-    for index in range(len(header)):
-        worksheet.auto_filter.add_filter_column(index, [])
-
-    # Add data rows
-    for datum in data:
-        row = [datum.get(key, '') for key in header]
-        log.debug("Row: %s", row)
-        worksheet.append(row)
-
-    workbook.save(path)
-
-    return path
-
-
-def _get_header(data):
-    """Collect column names from every data set."""
-    header = set()
-
-    for datum in data:
-        header.update(datum.keys())
-
-    return list(header)
 
 
 def parse_xlsx_into_dicts(xl):
@@ -74,8 +31,8 @@ def parse_xlsx_into_dicts(xl):
                     metric_dict[col_name] = sheet.cell(row, col).value
             # special conversions
             try:
-                year, month, day, hour, minute, second = xlrd.xldate_as_tuple(metric_dict['Date'], xl.datemode)
-                metric_dict['Date'] = datetime(year, month, day, hour, minute, second)
+                parts = xlrd.xldate_as_tuple(metric_dict['Date'], xl.datemode)
+                metric_dict['Date'] = datetime(*parts)
             except TypeError as err:
                 errmsg = "Invalid date in row {}. Go back, fix the cell in your spreadsheet, and upload it again.".format(row)
                 err.message = errmsg
@@ -91,3 +48,44 @@ def merge_metrics_from_dicts(metric_dicts):
             if v not in (None, ''):
                 metric[k] = v
         metric.save()
+
+
+def save_json(data, path):
+    with open(path, 'w') as outfile:
+        json.dump(data, outfile, indent=4)
+
+    return path
+
+
+def save_xlsx(data, path):
+    log.debug("Creating %s", path)
+    workbook = xlsxwriter.Workbook(path)
+    worksheet = workbook.add_worksheet()
+
+    # Add header row
+    header = _get_header(data)
+    log.debug("Header: %s", header)
+
+    # Add data rows
+    for index, datum in enumerate(data, start=1):
+        row = [datum.get(key, None) for key in header]
+        log.debug("Row: %s", row)
+        worksheet.write_row(index, 0, row)
+
+    # Convert the data to a table (for Microsoft BI)
+    worksheet.add_table("A1:ZZ9999")  # pylint: disable=no-value-for-parameter
+    worksheet.write_row(0, 0, header)
+
+    workbook.close()
+
+    return path
+
+
+def _get_header(data):
+    """Collect column names from every data set."""
+    header = set()
+
+    for datum in data:
+        header.update(datum.keys())
+
+    return list(header)

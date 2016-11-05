@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from datetime import datetime
 
 import pymongo
 
@@ -9,6 +10,8 @@ class Metric(OrderedDict):
 
     def __init__(self, PropertyID=None, Date=None, **kwargs):
         super().__init__()
+        if isinstance(Date, datetime):
+            Date = Date.replace(tzinfo=None)
         self['PropertyID'] = PropertyID
         self['Date'] = Date
         self.update(kwargs)
