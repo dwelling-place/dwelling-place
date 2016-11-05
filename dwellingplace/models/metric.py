@@ -1,5 +1,7 @@
 from collections import OrderedDict
 
+import pymongo
+
 from ..extensions import mongo
 
 
@@ -10,6 +12,11 @@ class Metric(OrderedDict):
         self['PropertyID'] = PropertyID
         self['Date'] = Date
         self.update(kwargs)
+
+    @classmethod
+    def create_indexes(cls):
+        cls._documents().create_index([('Date', pymongo.ASCENDING),
+                                       ('PropertyID', pymongo.ASCENDING)])
 
     @property
     def key(self):
