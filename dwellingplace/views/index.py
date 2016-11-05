@@ -3,8 +3,8 @@ import xlrd
 from flask import Blueprint, request, render_template, send_file, Response
 from flask_login import login_required
 
-from ..models import Metric, save_xlsx, save_json
-from ..models._utils import parse_xlsx_into_dicts, merge_metrics_from_dicts
+from ..models import Metric, Structure, save_xlsx, save_json
+from ..models._utils import parse_xlsx_into_dicts, merge_metrics_from_dicts, update_structure
 
 
 blueprint = Blueprint('index', __name__)
@@ -38,6 +38,7 @@ def upload():
     file = request.files['file']
     xl = xlrd.open_workbook(file_contents=file.stream.read())
     try:
+        update_structure(xl, Structure.load())
         merge_metrics_from_dicts(parse_xlsx_into_dicts(xl))
     except TypeError as err:
         return err.message
