@@ -118,8 +118,8 @@ else ifdef LINUX
 endif
 	@ touch $@  # flag to indicate dependencies are installed
 
-$(DEPS_BASE): requirements.txt $(PIP)
-	$(PIP) install --upgrade -r $<
+$(DEPS_BASE): setup.py requirements.txt $(PYTHON)
+	$(PYTHON) setup.py develop
 	@ touch $@  # flag to indicate dependencies are installed
 
 $(PIP): $(PYTHON)
