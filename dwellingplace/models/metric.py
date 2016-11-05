@@ -8,14 +8,12 @@ from ..extensions import mongo
 
 class Metric(OrderedDict):
 
-    def __init__(self, **kwargs):
+    def __init__(self, PropertyID=None, Date=None, **kwargs):
         super().__init__()
-        property_id = kwargs.pop('PropertyID', None)
-        date = kwargs.pop('Date', None)
-        if isinstance(date, datetime):
-            date = date.replace(tzinfo=None)
-        self['PropertyID'] = property_id
-        self['Date'] = date
+        if isinstance(Date, datetime):
+            Date = Date.replace(tzinfo=None)
+        self['PropertyID'] = PropertyID
+        self['Date'] = Date
         self.update(kwargs)
 
     @classmethod

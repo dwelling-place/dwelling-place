@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+from datetime import datetime
 
 from dwellingplace.settings import get_config
 from dwellingplace.app import create_app
@@ -12,10 +13,10 @@ def main():
 
     with app.app_context():
 
-        metric = models.Metric('prop1', '2016/10')
+        metric = models.Metric('prop1', datetime(2016, 11, 5))
         metric.save()
 
-        metric = models.Metric('prop2', '2016/10', extra="foobar", thing=1)
+        metric = models.Metric('prop2', datetime(2016, 11, 5), extra="foobar")
         metric.save()
 
 
