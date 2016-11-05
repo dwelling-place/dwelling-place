@@ -4,6 +4,7 @@ from flask import Flask
 
 from . import views
 from . import extensions
+from . import models
 
 
 log = logging.getLogger(__name__)
@@ -17,6 +18,9 @@ def create_app(config):
 
     register_blueprints(app)
     register_extensions(app)
+
+    with app.app_context():
+        models.Metric.create_indexes()
 
     return app
 
