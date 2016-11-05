@@ -17,7 +17,9 @@
         var fd = new FormData();
         fd.append("fileToUpload", document.getElementById('fileToUpload').files[0]);
         var xhr = new XMLHttpRequest();
-        xhr.upload.addEventListener("progress", uploadProgress, false);
+        //xhr.upload.addEventListener("progress", uploadProgress, false);
+        xhr.addEventListener("loadstart", function(event) {if (event.lengthComputable) progressbar.max = event.total}, false);
+        xhr.addEventListener("progress", function(event) {if (event.lengthComputable) progressbar.value = event.loaded}, false);
         xhr.addEventListener("load", uploadComplete, false);
         xhr.addEventListener("error", uploadFailed, false);
         xhr.addEventListener("abort", uploadCanceled, false);
