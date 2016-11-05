@@ -3,6 +3,7 @@
 import json
 import logging
 from datetime import datetime
+from bson.json_util import dumps, loads
 
 import openpyxl
 import xlrd
@@ -86,8 +87,11 @@ def merge_metrics_from_dicts(metric_dicts):
         m.save()
 
 
-def post_to_BI(dataset):
+def post_to_bi(dataset):
     pass
 
-def create_json_for_BI():
-    pass
+def create_json_for_bi():
+    # db = mongo_object['heroku_x5z36bv0']
+    data = dumps(Metric.objects())
+    json_data = json.loads(data)
+    print(json_data)
