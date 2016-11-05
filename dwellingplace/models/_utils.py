@@ -2,8 +2,12 @@
 
 import json
 import logging
+from datetime import datetime
 
 import openpyxl
+import xlrd
+
+from .metric import Metric
 
 
 log = logging.getLogger(__name__)
@@ -50,3 +54,40 @@ def _get_header(data):
         header.update(datum.keys())
 
     return list(header)
+
+
+def parse_xlsx_into_dicts(xl):
+    """
+    :param xl: an xlrd object
+    :return:
+    """
+    for sheet_name in xl.sheet_names():
+        sheet = xl.sheet_by_name(sheet_name)
+        column_names = sheet.row_values(0)
+        # mongodb doesn't like '.' in field names
+        column_names = [c.replace('.', '') for c in column_names]
+        for row in range(1, sheet.nrows):
+            metric_dict = {}
+            for col in range(0, sheet.ncols):
+                col_name = column_names[col]
+                if col_name:  # ignore blanks
+                    metric_dict[col_name] = sheet.cell(row, col).value
+            # special conversions
+            try:
+                year, month, day, hour, minute, second = xlrd.xldate_as_tuple(metric_dict['Date'], xl.datemode)
+                metric_dict['Date'] = datetime(year, month, day, hour, minute, second)
+            except TypeError as err:
+                errmsg = "Invalid date in row {}. Go back, fix the cell in your spreadsheet, and upload it again.".format(row)
+                err.message = errmsg
+                raise err
+            # done with this row
+            yield metric_dict
+
+
+def merge_metrics_from_dicts(metric_dicts):
+    for new_data in metric_dicts:
+        metric = Metric.find(PropertyID=new_data['PropertyID'], Date=new_data['Date'])
+        for k, v in new_data.items():
+            if v not in (None, ''):
+                metric[k] = v
+        metric.save()

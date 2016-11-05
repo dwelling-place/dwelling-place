@@ -38,6 +38,9 @@ def create_app(config):
     register_blueprints(app)
     register_extensions(app)
 
+    with app.app_context():
+        models.Metric.create_indexes()
+
     return app
 
 
