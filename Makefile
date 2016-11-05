@@ -137,7 +137,7 @@ data:
 	scripts/generate_sample_data.py
 else
 data: install
-	source env/bin/activate && scripts/generate_sample_data.py
+	. env/bin/activate && scripts/generate_sample_data.py
 endif
 
 # CHECKS #######################################################################
