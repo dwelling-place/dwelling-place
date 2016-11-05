@@ -118,8 +118,8 @@ else ifdef LINUX
 endif
 	@ touch $@  # flag to indicate dependencies are installed
 
-$(DEPS_BASE): setup.py requirements.txt $(PYTHON)
-	$(PYTHON) setup.py develop
+$(DEPS_BASE): requirements.txt $(PIP)
+	$(PIP) install --upgrade -r $<
 	@ touch $@  # flag to indicate dependencies are installed
 
 $(PIP): $(PYTHON)
@@ -220,7 +220,7 @@ PDOC_INDEX := docs/apidocs/$(PACKAGE)/index.html
 MKDOCS_INDEX := site/index.html
 
 .PHONY: doc
-doc: uml pdoc mkdocs ## Run documentation generators
+doc: uml ## Run documentation generators
 
 .PHONY: uml
 uml: install docs/*.png ## Generate UML diagrams for classes and packages
