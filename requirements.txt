@@ -1,0 +1,9 @@
+# Core
+Flask == 0.11.1
+
+# Models
+Flask-PyMongo == 0.4.1
+
+# Deployment
+Flask-Script == 2.0.5
+gunicorn == 19.3.0

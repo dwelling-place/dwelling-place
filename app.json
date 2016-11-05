@@ -1,0 +1,21 @@
+{
+  "name":"dwelling-place",
+  "scripts":{
+    "postdeploy": "make data"
+  },
+  "env":{
+    "HEROKU_APP_NAME": {
+      "required": true
+    },
+    "FLASK_ENV": {
+      "required": true
+    },
+    "SECRET_KEY": {
+      "generator": "secret"
+    }
+  },
+  "addons":[
+    "papertrail",
+    "mongolab"
+  ]
+}
