@@ -42,7 +42,7 @@ def upload():
         update_structure(xl, Structure.load())
         merge_metrics_from_dicts(parse_xlsx_into_dicts(xl))
     except TypeError as err:
-        flash('Upload Failed: ' + err.message,  "message-upload-fail")
+        flash('Upload Failed: ' + err.message, "message-upload-fail")
     else:
         flash('Upload successful.', "message-upload-success")
     return redirect(url_for('index.get'))
