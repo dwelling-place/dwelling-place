@@ -5,7 +5,7 @@
 
 # Overview
 
-A web application to automatically moderate discussions.
+A web application to manage spreadsheets for tracking housing data.
 
 # Setup
 
@@ -15,11 +15,16 @@ A web application to automatically moderate discussions.
 
 ## Installation
 
-Install from source:
+Clone the project:
 
 ```sh
 $ git clone https://github.com/dwelling-place/dwelling-place.git
 $ cd dwelling-place
+```
+
+Install project dependencies into a virtual environment:
+
+```sh
 $ make install
 ```
 
@@ -29,4 +34,10 @@ Run the application:
 
 ```sh
 $ make run
+```
+
+Run all checks and tests:
+
+```sh
+$ make ci
 ```
