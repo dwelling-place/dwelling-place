@@ -5,39 +5,6 @@
       <link type="stylesheet" href="styles.css"/>
    </head>
    <body>
-        	<h2>Upload</h2>
-	<section>
-    	<h3>Type of data</h3>
-    	<select id="typeOfUpload" required>
-    		<option value="">Choose a type</option>
-    		<option value="1">File 1</option>
-   			<option value="2">File 2</option>
-   			<option value="3">File 3</option>
-   			<option value="4">File 4</option>
-   			<option value="5">File 5</option>
-   			<option value="6">File 6</option>
-   		</select>
-  		<form id="form1" enctype="multipart/form-data" method="post" action="Upload.aspx">
-			<h3>Select a file to upload</h3>
-      		<input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();"/>
-      		<input type="button" onclick="uploadFile()" value="Upload" />
- 		</form>
-    	<h3>File Information</h3>
-    	<div id="fileName"></div>
-    	<div id="fileSize"></div>
-    	<div id="fileType"></div>
-    	<h3>Progress</h3>
-    	<progress></progress>
-    </section>
-	<h2>Download</h2>
- 	<section>
-    	<a href="file1.xls" download="file1.xls">File 1</a>
-    	<a href="file2.xls" download="file2.xls">File 2</a>
-    	<a href="file3.xls" download="file3.xls">File 3</a>
-    	<a href="file4.xls" download="file4.xls">File 4</a>
-    	<a href="file5.xls" download="file5.xls">File 5</a>
-    	<a href="file6.xls" download="file6.xls">File 6</a>
-    </section>   		
-
+   {% block body %}{% endblock %}
    </body>
 </html>
