@@ -12,6 +12,7 @@ A web application to manage spreadsheets for tracking housing data.
 ## Requirements
 
 * Python 3.5+
+* MongoDB 3.2+
 
 ## Installation
 

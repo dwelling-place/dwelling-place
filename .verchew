@@ -12,6 +12,13 @@ cli = python
 version = Python 3.5.2
 
 
+[MongoDB]
+
+cli = mongo
+
+version = 3.2.
+
+
 [pandoc]
 
 cli = pandoc
