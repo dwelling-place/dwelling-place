@@ -8,6 +8,7 @@ import openpyxl
 
 log = logging.getLogger(__name__)
 
+from .metric import Metric
 
 def save_json(data, path):
     with open(path, 'w') as outfile:
@@ -50,3 +51,24 @@ def _get_header(data):
         header.update(datum.keys())
 
     return list(header)
+
+def parse_xlsx_into_dicts(xl):
+    '''
+    :param xl: an xlrd object
+    :return:
+    '''
+    for sheet_name in xl.sheet_names():
+        sheet = xl.sheet_by_name(sheet_name)
+        column_names = sheet.row_values(0)
+        # TODO: handle periods in key names?
+        for row in range(1, sheet.nrows):
+            metric_dict = {}
+            for col in range(0, sheet.ncols):
+                metric_dict[column_names[col]] = sheet.cell(row, col).value
+            yield metric_dict
+
+def merge_metrics_from_dicts(metric_dicts):
+    for metric_dict in metric_dicts:
+        m = Metric.find(PropertyID=metric_dict['PropertyID'], Date=metric_dict['Period'])
+        m.update(**metric_dict)
+        m.save()

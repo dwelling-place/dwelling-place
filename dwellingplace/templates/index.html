@@ -39,7 +39,7 @@
     </section>
 
 
-    
+
 
 
 <form name="download" action="{{ url_for('index.download') }}" method="POST">
@@ -49,5 +49,10 @@
         {% endfor %}
     </select>
     <button type="submit">Download</button>
+</form>
+
+<form action="{{ url_for('index.upload') }}" method="POST" enctype="multipart/form-data">
+    <input type="file" name="file">
+    <button type="submit">Upload</button>
 </form>
 {% endblock%}
