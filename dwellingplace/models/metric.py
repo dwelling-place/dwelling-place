@@ -8,7 +8,7 @@ class Metric(OrderedDict):
     def __init__(self, PropertyID=None, Date=None, **kwargs):
         super().__init__()
         self['PropertyID'] = PropertyID
-        self['Date'] = Date
+        self['Date'] = Date.replace(tzinfo=None) if Date else None
         self.update(kwargs)
 
     @property
