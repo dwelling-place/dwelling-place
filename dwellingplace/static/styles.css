@@ -11,6 +11,7 @@ h1 {
 	color: white;
 	text-align: right;
 	background: rgb(136, 24, 26);
+	padding: 0.25em;
 }
 h2 {
 	color: white;
@@ -29,14 +30,14 @@ section {
 }
 
 div.messages {
-    margin: 0 0 0.25em 0;
+    margin: 0.5em 0;
 }
 
 div.message-upload-fail, div.message-upload-success {
     border: 2px solid black;
     color: rgba(14,16,15,1);
     font-weight: bold;
-    margin: 0 0 0.1em 0;
+/*    margin: 0 0 0.1em 0;*/
     padding: 0.25em 0.5em 0.25em 0.5em;
     text-align: center;
     width: 100%;
