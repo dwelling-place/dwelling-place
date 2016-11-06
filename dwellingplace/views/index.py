@@ -23,7 +23,7 @@ def get():
         ('json', "JSON"),
     ]
     structure = Structure.load()
-    months = Metric.months()
+    months = sorted(Metric.months(), reverse=True)
     return render_template("index.html",
                            formats=formats,
                            structure=structure,
