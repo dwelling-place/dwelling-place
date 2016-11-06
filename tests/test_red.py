@@ -1,4 +1,4 @@
-import pytest.mark
+import pytest
 
 @pytest.mark.skip(reason="How to juggle multiple apps?")
 def test_list(client):
