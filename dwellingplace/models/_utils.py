@@ -62,7 +62,7 @@ def update_structure(xl, structure):
         # mongodb doesn't like '.' in field names
         column_names = [c.replace('.', '') for c in column_names]
         structure[sheet_name] = column_names
-    structure.save()
+    return structure
 
 
 def save_json(data, path):
