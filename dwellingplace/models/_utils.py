@@ -80,17 +80,23 @@ def save_xlsx(data, path):
 
         # Add header row
         header = column_names
-        log.debug("Header: %s", header)
+        log.debug("Add header: %s", header)
 
         # Add data rows
-        index = 1
+        row = 1
         for datum in data:
-            row = [datum.get(key, None) for key in header]
-            if len(list(filter(None, row))) <= 4:
-                log.debug("Skipping Row since it is mostly Nones: %s", row)
-            else:
-                worksheet.write_row(index, 0, row)
-                index += 1
+
+            if skip_row(datum, header):
+                log.debug("Skipped empty row: %s", datum)
+                continue
+
+            log.debug("Add row: %s", datum)
+            for col, key in enumerate(header):
+                value, options = get_value(datum, key)
+                fmt = workbook.add_format(options) if options else None
+                worksheet.write(row, col, value, fmt)
+
+            row += 1
 
         # Convert the data to a table (for Microsoft BI)
         worksheet.add_table("A1:ZZ9999")  # pylint: disable=no-value-for-parameter
@@ -99,3 +105,34 @@ def save_xlsx(data, path):
     workbook.close()
 
     return path
+
+
+def get_header(data):
+    """Collect column names from every data set."""
+    header = set()
+
+    for datum in data:
+        header.update(datum.keys())
+
+    return list(header)
+
+
+def skip_row(datum, header):
+    """Determine if a row has not been filled in for this sheet."""
+    values = [datum.get(key) for key in header]
+    return sum(1 for value in values if value) <= 4
+
+
+def get_value(datum, key):
+    """Optimize the value and format for XLSX storage."""
+    value = datum.get(key, None)
+    options = None
+
+    if isinstance(value, datetime):
+        value = value.replace(tzinfo=None)
+        options = {'num_format': "mm/dd/yyyy"}
+
+    if isinstance(value, float) and -1 < value < 1.0 and value != 0:
+        options = {'num_format': "0.00%"}
+
+    return value, options
