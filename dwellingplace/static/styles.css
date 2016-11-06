@@ -39,7 +39,7 @@ a.button {
 }
 button, a.button {
 	vertical-align: top;
-	width: 150px;
+	width: 120px;
 	box-sizing: border-box;
 	text-align: center;
 	border: none;
@@ -61,7 +61,7 @@ button:hover, a.button:hover {
 button:disabled, a.button:disabled, button:hover:disabled, a.button:hover:disabled {
 	opacity: 0.5 ;
 }
-button i {
+button i, a.button i {
 	padding-right: 8px;
 }
 div.messages {
