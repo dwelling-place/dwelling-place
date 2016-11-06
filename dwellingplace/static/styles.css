@@ -17,21 +17,15 @@ h2 {
 	color: white;
 	background-color: black;
 	padding: 0 0.25em;
-}
-h3 {
-	display: inline;
-	margin-left: -1em;
-	color: grey;
 	font-size: 1em;
-	font-weight: bold;
 }
 section {
-	padding: 1em 2em;
+	padding: 1em;
 }
 button {
 	color: white;
 	background-color: green;
-	font-weight: bold;
+	font-weight: 700;
 	border-radius: 6px;
 	padding: 8px 16px;
 	opacity: 0.75;
@@ -49,7 +43,7 @@ div.messages {
 div.message-upload-fail, div.message-upload-success {
     border: 2px solid black;
     color: rgba(14,16,15,1);
-    font-weight: bold;
+    font-weight: 700;
     padding: 0.25em 0.5em 0.25em 0.5em;
     text-align: center;
     width: 100%;
