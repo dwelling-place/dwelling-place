@@ -83,14 +83,13 @@ def save_xlsx(data, path):
         log.debug("Header: %s", header)
 
         # Add data rows
-        index = 1
-        for datum in data:
-            row = [datum.get(key, None) for key in header]
-            if len(list(filter(None, row))) <= 4:
-                log.debug("Skipping Row since it is mostly Nones: %s", row)
-            else:
-                worksheet.write_row(index, 0, row)
-                index += 1
+        for row, datum in enumerate(data, start=1):
+            # TODO: skip empty rows
+            log.debug("Row: %s", datum)
+            for col, key in enumerate(header):
+                value, options = get_value(datum, key)
+                fmt = workbook.add_format(options) if options else None
+                worksheet.write(row, col, value, fmt)
 
         # Convert the data to a table (for Microsoft BI)
         worksheet.add_table("A1:ZZ9999")  # pylint: disable=no-value-for-parameter
@@ -99,3 +98,28 @@ def save_xlsx(data, path):
     workbook.close()
 
     return path
+
+
+def get_header(data):
+    """Collect column names from every data set."""
+    header = set()
+
+    for datum in data:
+        header.update(datum.keys())
+
+    return list(header)
+
+
+def get_value(datum, key):
+    """Optimize the value and format for XLSX storage."""
+    value = datum.get(key, None)
+    options = None
+
+    if isinstance(value, datetime):
+        value = value.replace(tzinfo=None)
+        options = {'num_format': "mm/dd/yyyy"}
+
+    if isinstance(value, float) and -1 < value < 1.0 and value != 0:
+        options = {'num_format': "0.00%"}
+
+    return value, options
