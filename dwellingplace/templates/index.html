@@ -8,7 +8,7 @@
     <section>
         <form action="{{ url_for('index.upload') }}" method="POST" enctype="multipart/form-data">
             <input type="file" name="file">
-            <button type="submit">Upload</button>
+            <button type="submit"><i class="fa fa-upload"></i>Upload</button>
         </form>
 		{% with messages = get_flashed_messages(with_categories=true) %}
 		    {% if messages %}
@@ -25,7 +25,7 @@
     <section>
         <form name="download" action="{{ url_for('index.download') }}" method="POST">
 			<input type="hidden" name="format" value="xlsx"/>
-            <button type="submit">Download</button>
+            <button type="submit"><i class="fa fa-download"></i>Download</button>
         </form>
     </section>
 
