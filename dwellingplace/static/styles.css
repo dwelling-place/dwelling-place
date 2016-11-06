@@ -27,19 +27,23 @@ h2 {
 section {
 	padding: 1em;
 }
-/*a.button {
+a.button {
+	display: inline-block;
 	text-decoration: none;
-}*/
+}
 button, a.button {
-	display: block;
+/*	display: inline-block;*/
 	width: 120px;
+	box-sizing: border-box;
 	text-align: center;
+	border: none;
 	outline: none;
 	user-select: none;
 	cursor: pointer;
 	color: white;
 	background-color: green;
 	font-weight: 700;
+	font-size: 0.8em;
 	border-radius: 6px;
 	padding: 8px 16px;
 	opacity: 0.75;
