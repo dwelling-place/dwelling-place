@@ -31,6 +31,7 @@ section {
 button {
 	color: white;
 	background-color: green;
+	font-weight: bold;
 	border-radius: 6px;
 	padding: 8px 16px;
 	opacity: 0.75;
@@ -49,7 +50,6 @@ div.message-upload-fail, div.message-upload-success {
     border: 2px solid black;
     color: rgba(14,16,15,1);
     font-weight: bold;
-/*    margin: 0 0 0.1em 0;*/
     padding: 0.25em 0.5em 0.25em 0.5em;
     text-align: center;
     width: 100%;
