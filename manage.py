@@ -6,6 +6,7 @@ import itertools
 from werkzeug.wsgi import DispatcherMiddleware
 from flask_script import Manager, Server
 from wsgi_basic_auth import BasicAuth
+from wsgi_sslify import sslify
 
 import dwellingplace.settings
 import dwellingplace.app
@@ -28,9 +29,14 @@ os.environ['WSGI_AUTH_CREDENTIALS'] = config.WSGI_AUTH_CREDENTIALS
 dpapp = dwellingplace.app.create_app(config)
 redapp = red.create_app(config)
 
-dpapp.wsgi_app = BasicAuth(DispatcherMiddleware(dpapp, {
-    '/red': redapp
+wsgi_app = BasicAuth(DispatcherMiddleware(dpapp.wsgi_app, {
+    '/red': redapp.wsgi_app
 }))
+
+if dpapp.config['USE_HTTPS']:
+    wsgi_app = sslify(wsgi_app)  # pylint: disable=redefined-variable-type
+
+dpapp.wsgi_app = wsgi_app
 
 server = Server(host='0.0.0.0', extra_files=itertools.chain(find_assets(dpapp), find_assets(redapp)))
 

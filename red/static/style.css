@@ -17,6 +17,12 @@ h2              { font-size: 1.2em; }
                   border: 1px solid #aacbe2; }
 .error          { background: #f0d6d6; padding: 0.5em; }
 
+nav.back {
+	position: absolute;
+	top: 0.5rem;
+	left: 1rem;
+}
+
 #projects, #map {
 	display: inline-block;
 	vertical-align: top;
