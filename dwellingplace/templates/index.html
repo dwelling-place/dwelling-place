@@ -21,14 +21,10 @@
 		{% endwith %}
     </section>
 
-    <h2>Download Data</h2>
+    <h2>Retrieve and Download Excel Data</h2>
     <section>
         <form name="download" action="{{ url_for('index.download') }}" method="POST">
-            <select name="format">
-                {% for ext, name in formats %}
-                <option value="{{ ext }}">{{ name }}</option>
-                {% endfor %}
-            </select>
+			<input type="hidden" name="format" value="xlsx"/>
             <button type="submit">Download</button>
         </form>
     </section>
