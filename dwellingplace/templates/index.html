@@ -9,7 +9,7 @@
     <h2>Upload Excel Data</h2>
     <section>
         <form action="{{ url_for('index.upload') }}" method="POST" enctype="multipart/form-data">
-            <input type="file" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required="required"/>
+            <input type="file" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required />
             <button type="submit"><i class="fa fa-upload fa-lg"></i>Upload</button>
         </form>
 		{% with messages = get_flashed_messages(with_categories=true) %}
