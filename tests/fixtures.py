@@ -7,11 +7,14 @@ import pytest
 from dwellingplace.app import create_app
 from dwellingplace.settings import get_config
 from dwellingplace.models import Metric
-
+import red
+import red.settings
 
 @pytest.fixture
 def app():
-    return create_app(get_config('test'))
+    app = create_app(get_config('test'))
+    app.testing = True
+    return app
 
 
 @pytest.fixture
@@ -32,3 +35,8 @@ def metric(app):
     with app.app_context():
         metric.save()
     return metric
+
+# FIXME: How to do testing on a composite app?
+@pytest.fixture
+def redapp():
+    return red.create_app(red.settings.get_config('test'))
