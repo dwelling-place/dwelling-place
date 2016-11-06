@@ -1,0 +1,246 @@
+<!doctype html>
+<html>
+<head>
+  <title>ReD</title>
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+  <script src="{{ url_for('static', filename='dialog-polyfill/dialog-polyfill.js') }}"></script>
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='dialog-polyfill/dialog-polyfill.css') }}">
+</head>
+<body>
+  <nav class=back>
+    <a href="/">&laquo; Return to Data Exchange</a>
+  </nav>
+  <div class=page>
+    <button id=addProject>Add Project</button>
+    <h1>ReD</h1>
+
+    {% for message in get_flashed_messages() %}
+      <div class=flash>{{ message }}</div>
+    {% endfor %}
+
+    <ul id=projects></ul><div id=map></div>
+
+    <p>
+      <a href="{{ url_for('red.csvdownload')}}">Download as CSV</a>
+    </p>
+  </div>
+  <dialog id="dlgEditProject">
+    <form>
+      <table>
+        <tr>
+          <th><label>Name:</label></th>
+          <td><input name=name type=text></td>
+        </tr>
+        <tr>
+          <th><label>Address:</label></th>
+          <td><textarea name=address rows=3 cols=40></textarea></td>
+        </tr>
+        <tr>
+          <th><label>Stage:</label></th>
+          <td><select name=stage>
+            <option>Conceptual</option>
+            <option>Funding Secured</option>
+            <option>Under Construction</option>
+            <option>Completed</option>
+            <option>Archived</option>
+          </select></td>
+        </tr>
+        <tr>
+          <th><label>Completion:</label></th>
+          <td>
+            <input name=completion type=range min=0 max=1 step=0.01>
+            <span id=completion-preview
+          </td>
+        </tr>
+        <tr>
+          <th><label>Start Date:</label></th>
+          <td><input name=start_date type=date></td>
+        </tr>
+        <tr>
+          <th><label>End Date:</label></th>
+          <td><input name=end_date type=date></td>
+        </tr>
+        <tr>
+          <th><label>PSH:</label></th>
+          <td><input name=psh type=number></td>
+        </tr>
+        <tr>
+          <th><label>Live/Work:</label></th>
+          <td><input name=livework type=number></td>
+        </tr>
+        <tr>
+          <th><label>Aff.:</label></th>
+          <td><input name=affordable type=number></td>
+        </tr>
+        <tr>
+          <th>Total Units:</th>
+          <td id="unittotal"></td>
+        </tr>
+        <tr>
+          <th><label>Commercial:</label></th>
+          <td><input name=commercial type=number></td>
+        </tr>
+        <tr>
+          <th><label>Comments:</label></th>
+          <td><textarea name=comments rows=10 cols=40></textarea></td>
+        </tr>
+      </table>
+    </form>
+    <button id=projSave>Save</button>
+    <button id=projDelete>Delete</button>
+    <button class=cancel>Cancel</button>
+  </dialog>
+  <script>
+  // Enable the dialog polyfill
+  // TODO: Handle dynamically-inserted dialog elements
+  (function() {
+    for (var dialog of document.querySelectorAll('dialog')) {
+      dialogPolyfill.registerDialog(dialog);
+    }
+  })();
+  </script>
+  <script src="{{ url_for('static', filename='jquery/dist/jquery.min.js') }}"></script>
+
+  <script>
+  function initMap() {
+    var map = new google.maps.Map($('#map')[0], {
+      zoom: 9,
+      center: {lat: 42.96125, lng: -85.655719} // Grand Rapids, MI
+    });
+
+    $.getJSON('/red/projects', function(projects) {
+      var gc = new google.maps.Geocoder();
+      for (var proj of projects) {
+        console.info('Populate', proj);
+
+        $('#projects').append(
+          $('<li>').data('id', proj._id).append(
+            $('<h3>').text(proj.name),
+            $('<div>').text(proj.stage),
+            proj.completion.match(/[\d.]+/)
+              ? $('<progress max=1>').attr('value', proj.completion) 
+              : undefined
+          )
+        );
+
+        if (proj.address) {
+          gc.geocode({address: proj.address}, function(results, status) {
+            var proj = this;
+            var marker = new google.maps.Marker({
+              position: results[0].geometry.location,
+              map: map,
+              title: proj.name
+            });
+
+            marker.addListener('click', function() {
+              editProject(proj._id);
+            });
+          }.bind(proj));
+        }
+      }
+    });
+  }
+  </script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBc84LXXxfOLqDEu13u1fj_hwJSWs55VCY&callback=initMap">
+  </script>
+  <script>
+  function editProject(projid) {
+    console.info('Edit', projid);
+    $('#dlgEditProject').data('id', projid || null);
+    if (projid != undefined) {
+      // We really really should have a local object store, or pass whole models, but meh
+      $.getJSON('/red/projects/'+projid, function(project) {
+        console.debug('editProject', project);
+        // Populate form
+        for (var prop in project) {
+          $('#dlgEditProject').find('input[name='+prop+']').attr('value', project[prop]);
+          $('#dlgEditProject').find('textarea[name='+prop+']').text(project[prop]);
+        }
+        $("#projDelete").show();
+        $('#dlgEditProject')[0].showModal();
+      });
+    } else {
+      $('#dlgEditProject').find('input').attr('value', '');
+      $('#dlgEditProject').find('textarea').text('');
+      $("#projDelete").hide();
+      $('#dlgEditProject')[0].showModal();
+    }
+  }
+
+  $(function() {
+    $('#addProject').click(function() {
+      editProject();
+    });
+
+    $("#projSave").click(function() {
+      var projid = $('#dlgEditProject').data('id');
+      console.info("Save", projid);
+      var fd = new FormData($('#dlgEditProject form')[0]);
+      var data = {};
+      for (var prop of fd.keys()) {
+        data[prop] = fd.get(prop);
+      }
+      if (projid) {
+        $.ajax('/red/projects/'+projid, {
+          data: data,
+          method: 'PUT',
+          success: function() {
+            document.location.reload();
+          }
+        });
+      } else {
+        $.post('/red/projects', data, function() {
+          document.location.reload();
+        });
+      }
+    });
+
+    $("#projDelete").click(function() {
+      if (window.confirm("This will permanently delete the project and cannot be undone!")) {
+        var projid = $('#dlgEditProject').data('id');
+        console.info("Delete", projid);
+        $.ajax('/red/projects/'+projid, {
+          method: 'DELETE',
+          success: function() {
+            document.location.reload();
+          }
+        });
+      }
+    });
+
+    $('.cancel').click(function() {
+      $(this).parents('dialog')[0].close();
+    });
+
+    $('#projects').on('click', 'li', function(event) {
+      editProject($(this).data('id'));
+    });
+
+    function onchange(jq, callback) {
+      callback = callback.bind(jq[0]);
+      (new MutationObserver(callback)).observe(jq[0], {attributes: true});
+      jq.on('input change', callback);
+    }
+
+    onchange($('input[name=completion]'), function() {
+      $('#completion-preview').text(
+        Math.round(this.value * 100)
+      );
+    });
+
+    function updateSum() {
+      $('#unittotal').text(
+        parseInt($('input[name=psh]')[0].value || '0')
+        + parseInt($('input[name=livework]')[0].value || '0')
+        + parseInt($('input[name=affordable]')[0].value || '0')
+      );
+    }
+
+    onchange($('input[name=psh]'), updateSum);
+    onchange($('input[name=livework]'), updateSum);
+    onchange($('input[name=affordable]'), updateSum);
+  });
+  </script>
+</body>
+</html>
