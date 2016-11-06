@@ -30,7 +30,7 @@ section {
 label {
 	vertical-align: top;
 }
-select {
+select, button, a.button {
 	margin-right: 1em;
 }
 a.button {
