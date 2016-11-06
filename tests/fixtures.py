@@ -10,6 +10,7 @@ from dwellingplace.models import Metric
 import red
 import red.settings
 
+
 @pytest.fixture
 def app():
     app = create_app(get_config('test'))
@@ -35,6 +36,7 @@ def metric(app):
     with app.app_context():
         metric.save()
     return metric
+
 
 # FIXME: How to do testing on a composite app?
 @pytest.fixture

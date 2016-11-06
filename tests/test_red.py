@@ -1,5 +1,6 @@
 import pytest
 
+
 @pytest.mark.skip(reason="How to juggle multiple apps?")
 def test_list(client):
     assert client.get('/projects').status_code == 200

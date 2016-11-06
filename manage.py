@@ -28,9 +28,7 @@ os.environ['WSGI_AUTH_CREDENTIALS'] = config.WSGI_AUTH_CREDENTIALS
 
 app = create_app(config)
 redapp = red.create_app(config)
-DispatcherMiddleware(app, {
-    '/red': redapp
-}) 
+
 app.wsgi_app = BasicAuth(DispatcherMiddleware(app, {
     '/red': redapp
 }))
