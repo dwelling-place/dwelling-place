@@ -30,11 +30,15 @@ section {
 label {
 	vertical-align: top;
 }
+select {
+	margin-right: 1em;
+}
 a.button {
 	display: inline-block;
 	text-decoration: none;
 }
 button, a.button {
+	vertical-align: top;
 	width: 120px;
 	box-sizing: border-box;
 	text-align: center;
