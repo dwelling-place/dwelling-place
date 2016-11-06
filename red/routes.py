@@ -1,7 +1,7 @@
 import csv
 import io
 from collections import OrderedDict
-from flask import Blueprint, render_template, request, make_response
+from flask import Blueprint, render_template, request, make_response, current_app
 from flask_restful import Resource, Api
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
@@ -13,7 +13,7 @@ mongo = PyMongo()
 
 @blueprint.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', googlemaps_key=current_app.config['GOOGLEMAPS_KEY'])
 
 
 api = Api()
