@@ -40,10 +40,11 @@ def download():
     ]
 
     data = list(Metric.objects(dates=months))
+    filename = get_filename("metrics", ext)
     if ext == 'xlsx':
-        path = save_xlsx(data, sheets, get_filename("metrics", ext))
+        path = save_xlsx(data, sheets, filename, prefill=True)
     elif ext == 'json':
-        path = save_json(data, get_filename("metrics", ext))
+        path = save_json(data, filename)
 
     return send_file(path, as_attachment=True)
 
@@ -58,8 +59,9 @@ def upload():
               "message-upload-fail")
     else:
         try:
-            update_structure(xl, Structure.load())
-            merge_metrics_from_dicts(parse_xlsx_into_dicts(xl))
+            new_structure = update_structure(xl, Structure.load())
+            parsed_data = list(parse_xlsx_into_dicts(xl))
+            merge_metrics_from_dicts(parsed_data)
         except TypeError as err:
             flash('Upload Failed: ' + err.message, "message-upload-fail")
         except KeyError:
@@ -70,5 +72,6 @@ def upload():
                   format(sys.exc_info()[0], sys.exc_info()[1]),
                   "message-upload-fail")
         else:
+            new_structure.save()
             flash('Upload successful.', "message-upload-success")
     return redirect(url_for('index.get'))
