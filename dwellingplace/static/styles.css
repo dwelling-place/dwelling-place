@@ -32,7 +32,6 @@ a.button {
 	text-decoration: none;
 }
 button, a.button {
-/*	display: inline-block;*/
 	width: 120px;
 	box-sizing: border-box;
 	text-align: center;
@@ -45,6 +44,7 @@ button, a.button {
 	font-weight: 700;
 	font-size: 0.8em;
 	border-radius: 6px;
+/*	box-shadow: 4px 4px 5px #444;*/
 	padding: 8px 16px;
 	opacity: 0.75;
 }
