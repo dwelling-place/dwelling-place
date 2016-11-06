@@ -107,6 +107,12 @@ def save_xlsx(data, path):
             'columns': [{'header': col_name} for col_name in column_names],
         })
 
+        # Set column widths
+        for col, name in enumerate(header):
+            worksheet.set_column(col, col, max(len(name) * 0.95, 10))
+        worksheet.set_column(0, 0, 12)  # PropertyID
+        worksheet.set_column(1, 1, 11)  # Date
+
     workbook.close()
 
     return path
