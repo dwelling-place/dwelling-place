@@ -130,7 +130,7 @@ def get_value(datum, key):
 
     if isinstance(value, datetime):
         value = value.replace(tzinfo=None)
-        options = {'num_format': "mm/dd/yyyy"}
+        options = {'num_format': "mmm yyyy"}
 
     if isinstance(value, float) and -1 < value < 1.0 and value != 0:
         options = {'num_format': "0.00%"}
