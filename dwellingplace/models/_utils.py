@@ -81,6 +81,7 @@ def save_xlsx(data, path):
         # Add header row
         header = column_names
         log.debug("Add header: %s", header)
+        worksheet.write_row(0, 0, header)
 
         # Add data rows
         row = 1
@@ -99,8 +100,12 @@ def save_xlsx(data, path):
             row += 1
 
         # Convert the data to a table (for Microsoft BI)
-        worksheet.add_table("A1:ZZ9999")  # pylint: disable=no-value-for-parameter
-        worksheet.write_row(0, 0, header)
+        worksheet.add_table(0, 0, row - 1, len(header) - 1, {
+            'autofilter': False,
+            'style': '',
+            'banded_rows': False,
+            'columns': [{'header': col_name} for col_name in column_names],
+        })
 
     workbook.close()
 
