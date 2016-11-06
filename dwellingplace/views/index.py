@@ -1,8 +1,7 @@
 import xlrd
 
-from flask import Blueprint, request, render_template, send_file, Response
+from flask import Blueprint, request, render_template, send_file
 from flask import flash, redirect, url_for
-from flask_login import login_required
 
 from ..models import Metric, Structure, save_xlsx, save_json
 from ..models._utils import parse_xlsx_into_dicts, merge_metrics_from_dicts, update_structure
@@ -46,9 +45,3 @@ def upload():
     else:
         flash('Upload successful.', "message-upload-success")
     return redirect(url_for('index.get'))
-
-
-@blueprint.route("/protected/", methods=["GET"])
-@login_required
-def protected():
-    return Response(response="Hello Protected World!", status=200)

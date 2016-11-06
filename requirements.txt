@@ -13,8 +13,4 @@ XlsxWriter == 0.9.3
 Flask-Script == 2.0.5
 gunicorn == 19.3.0
 
-# Forms
-WTForms == 2.1
-
-# Authentication
-Flask-Login == 0.4.0
+wsgi-basic-auth == 1.0.4
