@@ -54,7 +54,7 @@ def upload():
         except KeyError:
             flash('Upload Failed: You may have uploaded the wrong file or ' +
                   'the format is corrupt.', "message-upload-fail")
-        except:
+        except:  # pylint: disable=bare-except
             flash('Upload Failed: The reported error was: {} {}'.
                   format(sys.exc_info()[0], sys.exc_info()[1]),
                   "message-upload-fail")
