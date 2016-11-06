@@ -10,6 +10,7 @@ class Config:
     ROOT = os.path.dirname(PATH)
     DEBUG = False
     THREADED = False
+    USE_HTTPS = False
 
 
 class ProdConfig(Config):
@@ -20,6 +21,7 @@ class ProdConfig(Config):
     SECRET_KEY = os.getenv('SECRET_KEY')
     WSGI_AUTH_CREDENTIALS = os.getenv('WSGI_AUTH_CREDENTIALS')
     MONGO_URI = os.getenv('MONGODB_URI')
+    USE_HTTPS = True
 
 
 class TestConfig(Config):
