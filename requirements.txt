@@ -14,3 +14,4 @@ Flask-Script == 2.0.5
 gunicorn == 19.3.0
 
 wsgi-basic-auth == 1.0.4
+wsgi-sslify == 1.0.1

@@ -4,6 +4,7 @@ import json
 import logging
 from datetime import datetime
 from typing import List
+from collections import defaultdict
 
 import xlrd
 import xlsxwriter
@@ -62,7 +63,7 @@ def update_structure(xl, structure):
         # mongodb doesn't like '.' in field names
         column_names = [c.replace('.', '') for c in column_names]
         structure[sheet_name] = column_names
-    structure.save()
+    return structure
 
 
 def save_json(data, path):
@@ -72,15 +73,17 @@ def save_json(data, path):
     return path
 
 
-def save_xlsx(data: list, sheets: List[str], path: str):
+def save_xlsx(data: list, sheets: List[str], path: str, *, prefill: bool):
     log.debug("Creating %s", path)
     workbook = xlsxwriter.Workbook(path)
     structure = Structure.load()
+
     for sheet_name, column_names in structure.items():
         if sheet_name not in sheets:
             continue
 
         worksheet = workbook.add_worksheet(sheet_name)
+        prefill_cache = defaultdict(list)
 
         # Add header row
         header = column_names
@@ -92,16 +95,28 @@ def save_xlsx(data: list, sheets: List[str], path: str):
         for datum in data:
 
             if skip_row(datum, header):
-                log.debug("Skipped empty row: %s", datum)
                 continue
 
-            log.debug("Add row: %s", datum)
+            update_cache(datum, prefill_cache)
+
             for col, key in enumerate(header):
                 value, options = get_value(datum, key)
                 fmt = workbook.add_format(options) if options else None
                 worksheet.write(row, col, value, fmt)
 
             row += 1
+
+        # Prefill rows
+        if prefill and prefill_cache:
+            most_recent_date = max(prefill_cache.keys())
+            next_date = increment_month(most_recent_date)
+            log.info("Prefilling data for %s", next_date)
+            for key in prefill_cache[most_recent_date]:
+                worksheet.write(row, 0, key)
+                # TODO: don't specify formatting here, use `get_value`
+                fmt = workbook.add_format({'num_format': "mmm yyyy"})
+                worksheet.write(row, 1, next_date, fmt)
+                row += 1
 
         # Convert the data to a table (for Microsoft BI)
         worksheet.add_table(0, 0, row - 1, len(header) - 1, {
@@ -138,6 +153,13 @@ def skip_row(datum, header):
     return sum(1 for value in values if value) <= 4
 
 
+def update_cache(datum, cache):
+    key, _ = get_value(datum, 'PropertyID')
+    date, _ = get_value(datum, 'Date')
+    if key and date:
+        cache[date].append(key)
+
+
 def get_value(datum, key):
     """Optimize the value and format for XLSX storage."""
     value = datum.get(key, None)
@@ -151,3 +173,14 @@ def get_value(datum, key):
         options = {'num_format': "0.00%"}
 
     return value, options
+
+
+def increment_month(date):
+    year = date.year
+    month = date.month + 1
+
+    if month > 12:
+        month = 1
+        year += 1
+
+    return date.replace(year=year, month=month)
