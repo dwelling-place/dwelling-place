@@ -28,6 +28,12 @@
     <section>
         <form name="download" action="{{ url_for('index.download') }}" method="POST">
 			<input type="hidden" name="format" value="xlsx"/>
+            Sheets:
+            <select name="sheets" multiple>
+                {% for s in structure %}
+                    <option selected>{{ s }}</option>
+                {% endfor %}
+            </select>
             <button type="submit"><i class="fa fa-download fa-lg"></i>Download</button>
         </form>
     </section>

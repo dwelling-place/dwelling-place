@@ -20,16 +20,18 @@ def get():
         # ('csv', "CSV"),
         ('json', "JSON"),
     ]
-    return render_template("index.html", formats=formats)
+    structure = Structure.load()
+    return render_template("index.html", formats=formats, structure=structure)
 
 
 @blueprint.route("/download", methods=['POST'])
 def download():
     ext = request.form['format']
+    sheets = request.form.getlist('sheets')
 
     data = list(Metric.objects())
     if ext == 'xlsx':
-        path = save_xlsx(data, "/tmp/metrics.xlsx")
+        path = save_xlsx(data, sheets, "/tmp/metrics.xlsx")
     elif ext == 'json':
         path = save_json(data, "/tmp/metrics.json")
 
