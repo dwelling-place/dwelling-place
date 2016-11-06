@@ -5,7 +5,8 @@
 body {
 	font-family: Roboto, sans-serif;	
 	font-size: 100%;
-	background: #f5f5f5;
+	background: rgba(245,245,245,0.9),
+				url(/static/Dwelling Place logo.jpg) bottom right;
 }
 h1 {
 	color: white;
