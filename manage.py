@@ -7,10 +7,9 @@ from werkzeug.wsgi import DispatcherMiddleware
 from flask_script import Manager, Server
 from wsgi_basic_auth import BasicAuth
 
-from dwellingplace.settings import get_config
-from dwellingplace.app import create_app
+import dwellingplace.settings
+import dwellingplace.app
 import red
-import red.settings
 
 
 def find_assets(app):
@@ -22,20 +21,20 @@ def find_assets(app):
                 yield entry.path
 
 
-config = get_config(os.getenv('FLASK_ENV'))
+config = dwellingplace.settings.get_config(os.getenv('FLASK_ENV'))
 os.environ['WSGI_AUTH_CREDENTIALS'] = config.WSGI_AUTH_CREDENTIALS
 
 
-app = create_app(config)
+dpapp = dwellingplace.app.create_app(config)
 redapp = red.create_app(config)
 
-app.wsgi_app = BasicAuth(DispatcherMiddleware(app, {
+dpapp.wsgi_app = BasicAuth(DispatcherMiddleware(dpapp, {
     '/red': redapp
 }))
 
-server = Server(host='0.0.0.0', extra_files=itertools.chain(find_assets(app), find_assets(redapp)))
+server = Server(host='0.0.0.0', extra_files=itertools.chain(find_assets(dpapp), find_assets(redapp)))
 
-manager = Manager(app)
+manager = Manager(dpapp)
 manager.add_command('run', server)
 
 
