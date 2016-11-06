@@ -3,12 +3,14 @@
 {% block title %} | Home{% endblock %}
 
 {% block body %}
+
 	<h1>Dwelling Place Visualizer Data Exchange</h1>
+ 
     <h2>Upload Excel Data</h2>
     <section>
         <form action="{{ url_for('index.upload') }}" method="POST" enctype="multipart/form-data">
-            <input type="file" name="file">
-            <button type="submit">Upload</button>
+            <input type="file" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+            <button type="submit"><i class="fa fa-upload fa-lg"></i>Upload</button>
         </form>
 		{% with messages = get_flashed_messages(with_categories=true) %}
 		    {% if messages %}
@@ -19,14 +21,32 @@
 		        </div>
 		    {% endif %}
 		{% endwith %}
+
     </section>
 
     <h2>Retrieve and Download Excel Data</h2>
     <section>
         <form name="download" action="{{ url_for('index.download') }}" method="POST">
 			<input type="hidden" name="format" value="xlsx"/>
-            <button type="submit">Download</button>
+            Sheets:
+            <select name="sheets" multiple>
+                {% for s in structure %}
+                    <option selected>{{ s }}</option>
+                {% endfor %}
+            </select>
+            Months:
+            <select name="months" multiple>
+                {% for m in months %}
+                    <option selected>{{ '{:%b %Y}'.format(m) }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit"><i class="fa fa-download fa-lg"></i>Download</button>
         </form>
+    </section>
+    
+    <h2>Analyze Data with Business Intelligence</h2>
+    <section>
+    	<a href="https://app.powerbi.com/" class="button">Analyze</a>
     </section>
 
 {% endblock%}

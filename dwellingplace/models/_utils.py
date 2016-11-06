@@ -3,6 +3,7 @@
 import json
 import logging
 from datetime import datetime
+from typing import List
 
 import xlrd
 import xlsxwriter
@@ -71,11 +72,14 @@ def save_json(data, path):
     return path
 
 
-def save_xlsx(data, path):
+def save_xlsx(data: list, sheets: List[str], path: str):
     log.debug("Creating %s", path)
     workbook = xlsxwriter.Workbook(path)
     structure = Structure.load()
     for sheet_name, column_names in structure.items():
+        if sheet_name not in sheets:
+            continue
+
         worksheet = workbook.add_worksheet(sheet_name)
 
         # Add header row
@@ -106,6 +110,12 @@ def save_xlsx(data, path):
             'banded_rows': False,
             'columns': [{'header': col_name} for col_name in column_names],
         })
+
+        # Set column widths
+        for col, name in enumerate(header):
+            worksheet.set_column(col, col, max(len(name) * 0.95, 10))
+        worksheet.set_column(0, 0, 12)  # PropertyID
+        worksheet.set_column(1, 1, 11)  # Date
 
     workbook.close()
 
