@@ -9,6 +9,7 @@ from flask import flash, redirect, url_for
 
 from ..models import Metric, Structure, save_xlsx, save_json
 from ..models._utils import parse_xlsx_into_dicts, merge_metrics_from_dicts, update_structure
+from ._utils import get_filename
 
 
 blueprint = Blueprint('index', __name__)
@@ -40,9 +41,9 @@ def download():
 
     data = list(Metric.objects(dates=months))
     if ext == 'xlsx':
-        path = save_xlsx(data, sheets, "/tmp/metrics.xlsx")
+        path = save_xlsx(data, sheets, get_filename("metrics", ext))
     elif ext == 'json':
-        path = save_json(data, "/tmp/metrics.json")
+        path = save_json(data, get_filename("metrics", ext))
 
     return send_file(path, as_attachment=True)
 
