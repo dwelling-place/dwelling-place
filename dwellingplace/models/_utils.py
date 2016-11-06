@@ -80,16 +80,23 @@ def save_xlsx(data, path):
 
         # Add header row
         header = column_names
-        log.debug("Header: %s", header)
+        log.debug("Add header: %s", header)
 
         # Add data rows
-        for row, datum in enumerate(data, start=1):
-            # TODO: skip empty rows
-            log.debug("Row: %s", datum)
+        row = 1
+        for datum in data:
+
+            if skip_row(datum, header):
+                log.debug("Skipped empty row: %s", datum)
+                continue
+
+            log.debug("Add row: %s", datum)
             for col, key in enumerate(header):
                 value, options = get_value(datum, key)
                 fmt = workbook.add_format(options) if options else None
                 worksheet.write(row, col, value, fmt)
+
+            row += 1
 
         # Convert the data to a table (for Microsoft BI)
         worksheet.add_table("A1:ZZ9999")  # pylint: disable=no-value-for-parameter
@@ -108,6 +115,12 @@ def get_header(data):
         header.update(datum.keys())
 
     return list(header)
+
+
+def skip_row(datum, header):
+    """Determine if a row has not been filled in for this sheet."""
+    values = [datum.get(key) for key in header]
+    return sum(1 for value in values if value) <= 4
 
 
 def get_value(datum, key):
