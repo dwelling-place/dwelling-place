@@ -49,9 +49,16 @@ class Metric(OrderedDict):
             )
 
     @classmethod
-    def objects(cls):
+    def objects(cls, dates=None):
         documents = cls._documents()
-        for document in documents.find():
+        query = {}
+        if dates:
+            query['Date'] = {'$in': dates}
+        sort = [
+            ('Date', pymongo.ASCENDING),
+            ('PropertyID', pymongo.ASCENDING),
+        ]
+        for document in documents.find(query).sort(sort):
             document.pop('_id')
             yield cls(
                 PropertyID=document.pop('PropertyID', None),
@@ -66,3 +73,8 @@ class Metric(OrderedDict):
     def delete(self):
         documents = self._documents()
         documents.delete_one(self.key)
+
+    @classmethod
+    def months(cls):
+        documents = cls._documents()
+        return sorted(documents.distinct('Date'))

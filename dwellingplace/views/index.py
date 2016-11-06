@@ -1,4 +1,5 @@
 import sys
+from datetime import datetime
 
 import xlrd
 from xlrd.biffh import XLRDError
@@ -21,15 +22,23 @@ def get():
         ('json', "JSON"),
     ]
     structure = Structure.load()
-    return render_template("index.html", formats=formats, structure=structure)
+    months = Metric.months()
+    return render_template("index.html",
+                           formats=formats,
+                           structure=structure,
+                           months=months)
 
 
 @blueprint.route("/download", methods=['POST'])
 def download():
     ext = request.form['format']
     sheets = request.form.getlist('sheets')
+    months = [
+        datetime.strptime(m, '%b %Y')
+        for m in request.form.getlist('months')
+    ]
 
-    data = list(Metric.objects())
+    data = list(Metric.objects(dates=months))
     if ext == 'xlsx':
         path = save_xlsx(data, sheets, "/tmp/metrics.xlsx")
     elif ext == 'json':

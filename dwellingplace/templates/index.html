@@ -34,6 +34,12 @@
                     <option selected>{{ s }}</option>
                 {% endfor %}
             </select>
+            Months:
+            <select name="months" multiple>
+                {% for m in months %}
+                    <option selected>{{ '{:%b %Y}'.format(m) }}</option>
+                {% endfor %}
+            </select>
             <button type="submit"><i class="fa fa-download fa-lg"></i>Download</button>
         </form>
     </section>
