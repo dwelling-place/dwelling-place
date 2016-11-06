@@ -77,4 +77,4 @@ class Metric(OrderedDict):
     @classmethod
     def months(cls):
         documents = cls._documents()
-        return sorted(documents.distinct('Date'))
+        return documents.distinct('Date')
