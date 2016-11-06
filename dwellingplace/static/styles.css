@@ -30,7 +30,7 @@ section {
 label {
 	vertical-align: top;
 }
-select {
+select, button, a.button {
 	margin-right: 1em;
 }
 a.button {
@@ -47,7 +47,7 @@ button, a.button {
 	user-select: none;
 	cursor: pointer;
 	color: white;
-	background-color: green;
+	background-color: #318830;
 	font-weight: 700;
 	font-size: 0.8em;
 	border-radius: 6px;
