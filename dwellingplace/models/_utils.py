@@ -32,8 +32,8 @@ def parse_xlsx_into_dicts(xl):
                     metric_dict[col_name] = sheet.cell(row, col).value
             # special conversions
             try:
-                parts = xlrd.xldate_as_tuple(metric_dict['Date'], xl.datemode)
-                metric_dict['Date'] = datetime(*parts)
+                year, month, *_ = xlrd.xldate_as_tuple(metric_dict['Date'], xl.datemode)
+                metric_dict['Date'] = datetime(year, month, 1, 0, 0, 0)
             except TypeError as err:
                 errmsg = "Invalid date in sheet {!r} row {}. Go back, fix the cell in your spreadsheet, and upload it again.".format(sheet_name, row)
                 err.message = errmsg
@@ -81,6 +81,7 @@ def save_xlsx(data, path):
         # Add header row
         header = column_names
         log.debug("Add header: %s", header)
+        worksheet.write_row(0, 0, header)
 
         # Add data rows
         row = 1
@@ -99,8 +100,18 @@ def save_xlsx(data, path):
             row += 1
 
         # Convert the data to a table (for Microsoft BI)
-        worksheet.add_table("A1:ZZ9999")  # pylint: disable=no-value-for-parameter
-        worksheet.write_row(0, 0, header)
+        worksheet.add_table(0, 0, row - 1, len(header) - 1, {
+            'autofilter': False,
+            'style': '',
+            'banded_rows': False,
+            'columns': [{'header': col_name} for col_name in column_names],
+        })
+
+        # Set column widths
+        for col, name in enumerate(header):
+            worksheet.set_column(col, col, max(len(name) * 0.95, 10))
+        worksheet.set_column(0, 0, 12)  # PropertyID
+        worksheet.set_column(1, 1, 11)  # Date
 
     workbook.close()
 
@@ -130,7 +141,7 @@ def get_value(datum, key):
 
     if isinstance(value, datetime):
         value = value.replace(tzinfo=None)
-        options = {'num_format': "mm/dd/yyyy"}
+        options = {'num_format': "mmm yyyy"}
 
     if isinstance(value, float) and -1 < value < 1.0 and value != 0:
         options = {'num_format': "0.00%"}
