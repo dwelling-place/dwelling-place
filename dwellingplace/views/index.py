@@ -40,10 +40,11 @@ def download():
     ]
 
     data = list(Metric.objects(dates=months))
+    filename = get_filename("metrics", ext)
     if ext == 'xlsx':
-        path = save_xlsx(data, sheets, get_filename("metrics", ext))
+        path = save_xlsx(data, sheets, filename, prefill=True)
     elif ext == 'json':
-        path = save_json(data, get_filename("metrics", ext))
+        path = save_json(data, filename)
 
     return send_file(path, as_attachment=True)
 
