@@ -25,7 +25,7 @@ os.environ['WSGI_AUTH_CREDENTIALS'] = config.WSGI_AUTH_CREDENTIALS
 app = create_app(config)
 app.wsgi_app = BasicAuth(app.wsgi_app)
 if app.config['USE_HTTPS']:
-    app.wsgi_app = sslify(app.wsgi_app)
+    app.wsgi_app = sslify(app.wsgi_app)  # pylint: disable=redefined-variable-type
 
 server = Server(host='0.0.0.0', extra_files=find_assets())
 
