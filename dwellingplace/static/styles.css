@@ -2,10 +2,15 @@
 	margin: 0;
 	padding: 0;	
 }
+html {
+	height: 100%;
+}
 body {
-	font-family: -apple-system, Roboto, sans-serif;	
+	font-family: Roboto, sans-serif;	
 	font-size: 100%;
-	background: #f5f5f5;
+	min-height: 100%;
+	background: linear-gradient(rgba(245,245,245,0.67),rgba(245,245,245,0.67)),
+				url("/static/Dwelling%20Place%20logo.jpg") bottom right/30% no-repeat;
 }
 h1 {
 	color: white;
@@ -17,18 +22,34 @@ h2 {
 	color: white;
 	background-color: black;
 	padding: 0 0.25em;
-}
-h3 {
-	display: inline;
-	margin-left: -1em;
-	color: grey;
 	font-size: 1em;
-	font-weight: bold;
 }
 section {
-	padding: 1em 2em;
+	padding: 1em;
 }
-
+/*a.button {
+	text-decoration: none;
+}*/
+button, a.button {
+	display: block;
+	width: 120px;
+	text-align: center;
+	outline: none;
+	user-select: none;
+	cursor: pointer;
+	color: white;
+	background-color: green;
+	font-weight: 700;
+	border-radius: 6px;
+	padding: 8px 16px;
+	opacity: 0.75;
+}
+button:hover, a.button:hover {
+	opacity: 1;
+}
+button i {
+	padding-right: 8px;
+}
 div.messages {
     margin: 0.5em 0;
 }
@@ -36,8 +57,7 @@ div.messages {
 div.message-upload-fail, div.message-upload-success {
     border: 2px solid black;
     color: rgba(14,16,15,1);
-    font-weight: bold;
-/*    margin: 0 0 0.1em 0;*/
+    font-weight: 700;
     padding: 0.25em 0.5em 0.25em 0.5em;
     text-align: center;
     width: 100%;
