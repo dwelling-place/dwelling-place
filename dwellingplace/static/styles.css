@@ -27,7 +27,16 @@ h2 {
 section {
 	padding: 1em;
 }
-button {
+/*a.button {
+	text-decoration: none;
+}*/
+button, a.button {
+	display: block;
+	width: 120px;
+	text-align: center;
+	outline: none;
+	user-select: none;
+	cursor: pointer;
 	color: white;
 	background-color: green;
 	font-weight: 700;
@@ -35,7 +44,7 @@ button {
 	padding: 8px 16px;
 	opacity: 0.75;
 }
-button:hover {
+button:hover, a.button:hover {
 	opacity: 1;
 }
 button i {
