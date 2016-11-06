@@ -18,6 +18,7 @@ class ProdConfig(Config):
     ENV = 'prod'
 
     SECRET_KEY = os.getenv('SECRET_KEY')
+    WSGI_AUTH_CREDENTIALS = os.getenv('WSGI_AUTH_CREDENTIALS')
     MONGO_URI = os.getenv('MONGODB_URI')
 
 
@@ -30,6 +31,7 @@ class TestConfig(Config):
     TESTING = True
 
     SECRET_KEY = 'test'
+    WSGI_AUTH_CREDENTIALS = None
     MONGO_DBNAME = 'dwellingplace_test'
 
 
@@ -41,6 +43,7 @@ class DevConfig(Config):
     DEBUG = True
 
     SECRET_KEY = 'dev'
+    WSGI_AUTH_CREDENTIALS = 'admin:password'
     MONGO_DBNAME = 'dwellingplace_dev'
 
 

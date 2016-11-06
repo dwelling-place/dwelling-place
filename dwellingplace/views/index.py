@@ -1,8 +1,10 @@
-import xlrd
+import sys
 
-from flask import Blueprint, request, render_template, send_file, Response
+import xlrd
+from xlrd.biffh import XLRDError
+
+from flask import Blueprint, request, render_template, send_file
 from flask import flash, redirect, url_for
-from flask_login import login_required
 
 from ..models import Metric, Structure, save_xlsx, save_json
 from ..models._utils import parse_xlsx_into_dicts, merge_metrics_from_dicts, update_structure
@@ -37,18 +39,24 @@ def download():
 @blueprint.route("/upload", methods=['POST'])
 def upload():
     file = request.files['file']
-    xl = xlrd.open_workbook(file_contents=file.stream.read())
     try:
-        update_structure(xl, Structure.load())
-        merge_metrics_from_dicts(parse_xlsx_into_dicts(xl))
-    except TypeError as err:
-        flash('Upload Failed: ' + err.message, "message-upload-fail")
+        xl = xlrd.open_workbook(file_contents=file.stream.read())
+    except XLRDError:
+        flash('Upload Failed: The file was probably not an Excel workbook.',
+              "message-upload-fail")
     else:
-        flash('Upload successful.', "message-upload-success")
+        try:
+            update_structure(xl, Structure.load())
+            merge_metrics_from_dicts(parse_xlsx_into_dicts(xl))
+        except TypeError as err:
+            flash('Upload Failed: ' + err.message, "message-upload-fail")
+        except KeyError:
+            flash('Upload Failed: You may have uploaded the wrong file or ' +
+                  'the format is corrupt.', "message-upload-fail")
+        except:  # pylint: disable=bare-except
+            flash('Upload Failed: The reported error was: {} {}'.
+                  format(sys.exc_info()[0], sys.exc_info()[1]),
+                  "message-upload-fail")
+        else:
+            flash('Upload successful.', "message-upload-success")
     return redirect(url_for('index.get'))
-
-
-@blueprint.route("/protected/", methods=["GET"])
-@login_required
-def protected():
-    return Response(response="Hello Protected World!", status=200)
