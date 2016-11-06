@@ -10,7 +10,7 @@ body {
 	font-size: 100%;
 	min-height: 100%;
 	background: linear-gradient(rgba(245,245,245,0.67),rgba(245,245,245,0.67)),
-				url("/static/Dwelling%20Place%20logo.jpg") bottom right/30% no-repeat;
+				url("/static/Dwelling%20Place%20logo.jpg") bottom right/33% no-repeat;
 }
 h1 {
 	color: white;
@@ -30,7 +30,7 @@ section {
 label {
 	vertical-align: top;
 }
-select {
+select, button, a.button {
 	margin-right: 1em;
 }
 a.button {
@@ -47,7 +47,7 @@ button, a.button {
 	user-select: none;
 	cursor: pointer;
 	color: white;
-	background-color: green;
+	background-color: #318830;
 	font-weight: 700;
 	font-size: 0.8em;
 	border-radius: 6px;
