@@ -2,6 +2,9 @@
 	margin: 0;
 	padding: 0;	
 }
+html {
+	height: 100%;
+}
 body {
 	font-family: Roboto, sans-serif;	
 	font-size: 100%;
