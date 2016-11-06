@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 
-{% block title %} | Home{% endblock %}
+{% block title %}{% endblock %}
 
 {% block body %}
 
 	<h1>Dwelling Place Visualizer Data Exchange</h1>
- 
+
     <h2>Upload Excel Data</h2>
     <section>
         <form action="{{ url_for('index.upload') }}" method="POST" enctype="multipart/form-data">
@@ -43,7 +43,7 @@
             <button type="submit"><i class="fa fa-download fa-lg"></i>Download</button>
         </form>
     </section>
-    
+
     <h2>Analyze Data with Business Intelligence</h2>
     <section>
     	<a href="https://app.powerbi.com/" class="button">Analyze</a>
