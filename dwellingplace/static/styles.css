@@ -27,12 +27,18 @@ h2 {
 section {
 	padding: 1em;
 }
+label {
+	vertical-align: top;
+}
+select {
+	margin-right: 1em;
+}
 a.button {
 	display: inline-block;
 	text-decoration: none;
 }
 button, a.button {
-/*	display: inline-block;*/
+	vertical-align: top;
 	width: 120px;
 	box-sizing: border-box;
 	text-align: center;
@@ -45,11 +51,15 @@ button, a.button {
 	font-weight: 700;
 	font-size: 0.8em;
 	border-radius: 6px;
+/*	box-shadow: 4px 4px 5px #444;*/
 	padding: 8px 16px;
 	opacity: 0.75;
 }
 button:hover, a.button:hover {
 	opacity: 1;
+}
+button:disabled, a.button:disabled, button:hover:disabled, a.button:hover:disabled {
+	opacity: 0.5 ;
 }
 button i {
 	padding-right: 8px;
