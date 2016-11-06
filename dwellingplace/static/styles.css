@@ -27,6 +27,9 @@ h2 {
 section {
 	padding: 1em;
 }
+label {
+	vertical-align: top;
+}
 a.button {
 	display: inline-block;
 	text-decoration: none;

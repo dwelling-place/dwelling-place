@@ -28,13 +28,13 @@
     <section>
         <form name="download" action="{{ url_for('index.download') }}" method="POST">
 			<input type="hidden" name="format" value="xlsx"/>
-            Sheets:
+            <label for="sheets">Sheets:</label>
             <select name="sheets" multiple>
                 {% for s in structure %}
                     <option selected>{{ s }}</option>
                 {% endfor %}
             </select>
-            Months:
+            <label for="months">Months:</label>
             <select name="months" multiple>
                 {% for m in months %}
                     <option selected>{{ '{:%b %Y}'.format(m) }}</option>
