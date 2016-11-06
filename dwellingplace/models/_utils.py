@@ -32,8 +32,8 @@ def parse_xlsx_into_dicts(xl):
                     metric_dict[col_name] = sheet.cell(row, col).value
             # special conversions
             try:
-                parts = xlrd.xldate_as_tuple(metric_dict['Date'], xl.datemode)
-                metric_dict['Date'] = datetime(*parts)
+                year, month, *_ = xlrd.xldate_as_tuple(metric_dict['Date'], xl.datemode)
+                metric_dict['Date'] = datetime(year, month, 1, 0, 0, 0)
             except TypeError as err:
                 errmsg = "Invalid date in sheet {!r} row {}. Go back, fix the cell in your spreadsheet, and upload it again.".format(sheet_name, row)
                 err.message = errmsg
@@ -135,7 +135,7 @@ def get_value(datum, key):
 
     if isinstance(value, datetime):
         value = value.replace(tzinfo=None)
-        options = {'num_format': "mm/dd/yyyy"}
+        options = {'num_format': "mmm yyyy"}
 
     if isinstance(value, float) and -1 < value < 1.0 and value != 0:
         options = {'num_format': "0.00%"}

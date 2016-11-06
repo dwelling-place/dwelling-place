@@ -48,4 +48,4 @@ def describe_get_value():
 
     def when_date(datum):
         expect(get_value(datum, '_date')) == \
-            (datetime(2016, 11, 5), {'num_format': "mm/dd/yyyy"})
+            (datetime(2016, 11, 5), {'num_format': "mmm yyyy"})
