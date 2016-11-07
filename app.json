@@ -15,6 +15,9 @@
     },
     "WSGI_AUTH_CREDENTIALS": {
       "required": true
+    },
+    "GOOGLEMAPS_KEY": {
+      "required": true
     }
   },
   "addons":[
