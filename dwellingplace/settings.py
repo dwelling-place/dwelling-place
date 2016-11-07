@@ -22,6 +22,7 @@ class ProdConfig(Config):
     WSGI_AUTH_CREDENTIALS = os.getenv('WSGI_AUTH_CREDENTIALS')
     MONGO_URI = os.getenv('MONGODB_URI')
     USE_HTTPS = True
+    GOOGLEMAPS_KEY = os.getenv('GOOGLEMAPS_KEY')
 
 
 class TestConfig(Config):
@@ -35,6 +36,7 @@ class TestConfig(Config):
     SECRET_KEY = 'test'
     WSGI_AUTH_CREDENTIALS = None
     MONGO_DBNAME = 'dwellingplace_test'
+    GOOGLEMAPS_KEY = 'AIzaSyBc84LXXxfOLqDEu13u1fj_hwJSWs55VCY'
 
 
 class DevConfig(Config):
@@ -47,6 +49,7 @@ class DevConfig(Config):
     SECRET_KEY = 'dev'
     WSGI_AUTH_CREDENTIALS = 'admin:password'
     MONGO_DBNAME = 'dwellingplace_dev'
+    GOOGLEMAPS_KEY = 'AIzaSyBc84LXXxfOLqDEu13u1fj_hwJSWs55VCY'
 
 
 def get_config(name):
